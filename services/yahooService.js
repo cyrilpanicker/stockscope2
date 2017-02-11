@@ -33,14 +33,12 @@ var transformCandleData = function (candleData) {
 
 
 exports.getCandleData = function (params) {
-    
     var stock = params.stock;
     var endDate = params.endDate;
     var q = query
         .replace('<STOCK>', stock)
         .replace('<END-DATE>', moment(endDate).format('YYYY-MM-DD'))
         .replace('<START-DATE>', moment(endDate).subtract(START_DATE_OFFSET, 'days').format('YYYY-MM-DD'));
-
     return new Promise(function (resolve, reject) {
         request({ uri: uri, qs: { env: env, format: format, q: q }, json: true }, function (error, response, body) {
             if (error) {
@@ -60,5 +58,4 @@ exports.getCandleData = function (params) {
             }
         });
     });
-
 };
