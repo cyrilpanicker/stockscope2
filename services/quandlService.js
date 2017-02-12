@@ -50,7 +50,7 @@ exports.getCandleData = function (params) {
                 reject('stock-invalid');
             }
             else if (!body.dataset || !body.dataset.data) {
-                reject('unexpcted-error');
+                reject('unexpected-error');
             }
             else if (body.dataset.data.length < CANDLES_TO_FETCH) {
                 reject('insufficient-data');
