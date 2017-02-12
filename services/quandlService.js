@@ -8,12 +8,12 @@ var CANDLES_TO_DISPLAY = 180;
 var MA1 = 8;
 var MA2 = 21;
 var MA3 = 55;
-var CANDLES_TO_FETCH = CANDLES_TO_DISPLAY + MA3 - 1;
+var CANDLES_TO_FETCH = 500;//CANDLES_TO_DISPLAY + MA3 - 1;
 
 
 var transformCandleData = function (symbol) {
     return function (datum) {
-        return {
+        var result = {
             symbol: symbol,
             date: datum[0],
             open: datum[1],
@@ -23,6 +23,10 @@ var transformCandleData = function (symbol) {
             volume: datum[6],
             turnover: datum[7]
         };
+        // if (datum[0] === '2017-01-11') {
+        //     result.close = datum[4];
+        // }
+        return result;
     };
 };
 

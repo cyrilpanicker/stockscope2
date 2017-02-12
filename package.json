@@ -4,11 +4,12 @@
   "description": "tool for technical analysis of stocks",
   "scripts": {
     "start": "node main.js",
-    "help":"node talib-help.js"
+    "help": "node talib-help.js"
   },
   "author": "cyrilpanicker@gmail.com",
   "license": "ISC",
   "dependencies": {
+    "d3": "^4.5.0",
     "moment": "^2.17.1",
     "request": "^2.79.0",
     "talib": "^1.0.2"
