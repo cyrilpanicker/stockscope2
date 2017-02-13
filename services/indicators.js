@@ -8,48 +8,20 @@ exports.sma = function(data,property,period){
             startIdx:0,
             endIdx:data.length-1,
             optInTimePeriod:period
-        },function(response){
-            if(!response.result){
-                reject('error');
-            }else{
-                var result = [];
-                var _data = data.slice(response.begIndex);
-                for(var i = 0; i<_data.length; i++){
-                    result.push({
-                        date:_data[i].date,
-                        value:response.result.outReal[i]
-                    });
-                }
-                resolve(result);
-            }
-        });
+        },responseHandler.bind(null,resolve,reject));
     });
 };
 
-exports.stdDev = function(candles,property,period){
+exports.stdDev = function(data,property,period){
     return new Promise(function(resolve,reject){
         talib.execute({
             name:'STDDEV',
-            inReal:candles.map(function(datum){return datum[property];}),
+            inReal:data.map(function(datum){return datum[property];}),
             startIdx:0,
-            endIdx:candles.length-1,
+            endIdx:data.length-1,
             optInTimePeriod:period,
             optInNbDev:1
-        },function(response){
-            if(!response.result){
-                reject('error');
-            }else{
-                var result = [];
-                var _candles = candles.slice(response.begIndex);
-                for(var i = 0; i<_candles.length; i++){
-                    result.push({
-                        date:_candles[i].date,
-                        value:response.result.outReal[i]
-                    });
-                }
-                resolve(result);
-            }
-        });
+        },responseHandler.bind(null,resolve,reject));
     });
 };
 
@@ -62,21 +34,7 @@ exports.tr = function(candles){
             close:candles.map(function(datum){return datum.close;}),
             startIdx:0,
             endIdx:candles.length-1
-        },function(response){
-            if(!response.result){
-                reject('error');
-            }else{
-                var result = [];
-                var _candles = candles.slice(response.begIndex);
-                for(var i = 0; i<_candles.length; i++){
-                    result.push({
-                        date:_candles[i].date,
-                        value:response.result.outReal[i]
-                    });
-                }
-                resolve(result);
-            }
-        });
+        },responseHandler.bind(null,resolve,reject));
     });
 };
 
@@ -90,20 +48,22 @@ exports.adx = function(candles,period){
             startIdx:0,
             endIdx:candles.length-1,
             optInTimePeriod:period
-        },function(response){
-            if(!response.result){
-                reject('error');
-            }else{
-                var result = [];
-                var _candles = candles.slice(response.begIndex);
-                for(var i = 0; i<_candles.length; i++){
-                    result.push({
-                        date:_candles[i].date,
-                        value:response.result.outReal[i]
-                    });
-                }
-                resolve(result);
-            }
-        });
+        },responseHandler.bind(null,resolve,reject));
     });
 };
+
+function responseHandler(resolve,reject,response){
+    if(!response.result){
+        reject('error');
+    } else {
+        var result = [];
+        var _data = data.slice(response.begIndex);
+        for(var i = 0; i<_data.length; i++){
+            result.push({
+                date:_data[i].date,
+                value:response.result.outReal[i]
+            });
+        }
+        resolve(result);
+    }
+}
