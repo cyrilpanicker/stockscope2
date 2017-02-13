@@ -3,15 +3,25 @@
   "version": "1.0.0",
   "description": "tool for technical analysis of stocks",
   "scripts": {
-    "start": "node main.js",
-    "help": "node talib-help.js"
+    "clean:logs": "rimraf logs/*",
+    "create:logsDir":"mkdirp logs",
+    "start": "npm run clean:logs && node main.js",
+    "start:prod": "export NODE_ENV=production && npm start",
+    "help": "node talib-help.js",
+    "postinstall": "npm run create:logsDir"
   },
   "author": "cyrilpanicker@gmail.com",
   "license": "ISC",
   "dependencies": {
     "d3": "^4.5.0",
+    "lodash": "^4.17.4",
     "moment": "^2.17.1",
     "request": "^2.79.0",
-    "talib": "^1.0.2"
+    "talib": "^1.0.2",
+    "winston": "^2.3.1"
+  },
+  "devDependencies": {
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.5.4"
   }
 }

@@ -1,0 +1,47 @@
+[
+  {
+    "name": "3M India Ltd.",
+    "industry": "SERVICES",
+    "symbol": "3MINDIA"
+  },
+  {
+    "name": "Cox & Kings Ltd.",
+    "industry": "SERVICES",
+    "symbol": "COX&KINGS"
+  },
+  {
+    "name": "ABB India Ltd.",
+    "industry": "INDUSTRIAL MANUFACTURING",
+    "symbol": "ABB"
+  },
+  {
+    "name": "Bajaj Auto Ltd.",
+    "industry": "AUTOMOBILE",
+    "symbol": "BAJAJ-AUTO"
+  },
+  {
+    "name": "Castrol India Ltd.",
+    "industry": "ENERGY",
+    "symbol": "CASTROLIND"
+  },
+  {
+    "name": "Firstsource Solutions Ltd.",
+    "industry": "IT",
+    "symbol": "FSL"
+  },
+  {
+    "name": "Welspun India Ltd.",
+    "industry": "TEXTILES",
+    "symbol": "WELSPUNIND"
+  },
+  {
+    "name": "Pipavav Defence and Offshore Engineering Company Ltd.",
+    "industry": "INDUSTRIAL MANUFACTURING",
+    "symbol": "PIPAVAVDOC"
+  },
+  {
+    "name": "Kewal Kiran Clothing Ltd.",
+    "industry": "TEXTILES",
+    "symbol": "KKCL"
+  }
+]

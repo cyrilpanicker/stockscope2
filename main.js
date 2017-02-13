@@ -1,23 +1,28 @@
 var quandlService = require('./services/quandlService');
 var indicators = require('./services/indicators');
-var customIndicators = require('./services/custom-indicators');
+var customIndicators = require('./services/customIndicators');
+var loggingService = require('./services/loggingService');
+var utils = require('./services/utils');
+var processLogger = loggingService.processLogger;
+var functionalLogger = loggingService.functionalLogger;
 
-var _candles;
-quandlService.getCandleData({
-    stock: 'INFY',
-    endDate: new Date()
-}).then(function (candles) {
-    _candles = candles;
-    return customIndicators.squeeze(candles);
-}, function (error) {
-    console.log(error);
-}).then(function(squeeze){
-    // _candles.forEach(function(item){
-    //     var squeezeResults = squeeze.filter(function(squeezeItem){
-    //         return squeezeItem.date === item.date;
-    //     });
-    //     item.squeeze = squeezeResults.length ? squeezeResults[0].value : null;
-    //     console.log(item.date+'\t\t'+item.open+'\t\t'+item.high+'\t\t'+item.low+'\t\t'+item.close+'\t\t'+item.squeeze);
-    // });
-    console.log(squeeze);
-},function(error){console.log(error);});
+var mode = process.env.NODE_ENV;
+var stocksListFile = mode !== 'production' ? 'data/stocks-list.test.json' : 'data/stocks-list.json' ;
+var stocksList = [];
+
+functionalLogger.info('reading from file "'+stocksListFile+'"');
+
+utils.readFile(stocksListFile).then(function(data){
+    stocksList = JSON.parse(data);
+    functionalLogger.info('processing started');
+},functionalLogger.error.bind(functionalLogger));
+
+function logProcessedInfo(params) {
+    processLogger.info(
+        params.id+' | '+
+        params.stock+' | '+
+        params.date+' | '+
+        params.price+' | '+
+        params.squeeze
+    );
+}
