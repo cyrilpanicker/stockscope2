@@ -53,3 +53,13 @@ exports.squeeze = function(candles){
         },function(error){reject(error);});
     });
 };
+
+exports.squeezeOffSince = function(candles){
+    return exports.squeeze(candles).then(function(squeeze){
+        var counter = 0;
+        for(var i=squeeze.length-1; i>=0 && squeeze[i].value===false; i--){
+            counter++;
+        }
+        return Promise.resolve(counter);
+    });
+};

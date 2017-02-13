@@ -8,7 +8,7 @@ exports.sma = function(data,property,period){
             startIdx:0,
             endIdx:data.length-1,
             optInTimePeriod:period
-        },responseHandler.bind(null,resolve,reject));
+        },responseHandler.bind(null,data,resolve,reject));
     });
 };
 
@@ -21,7 +21,7 @@ exports.stdDev = function(data,property,period){
             endIdx:data.length-1,
             optInTimePeriod:period,
             optInNbDev:1
-        },responseHandler.bind(null,resolve,reject));
+        },responseHandler.bind(null,data,resolve,reject));
     });
 };
 
@@ -34,7 +34,7 @@ exports.tr = function(candles){
             close:candles.map(function(datum){return datum.close;}),
             startIdx:0,
             endIdx:candles.length-1
-        },responseHandler.bind(null,resolve,reject));
+        },responseHandler.bind(null,candles,resolve,reject));
     });
 };
 
@@ -48,11 +48,11 @@ exports.adx = function(candles,period){
             startIdx:0,
             endIdx:candles.length-1,
             optInTimePeriod:period
-        },responseHandler.bind(null,resolve,reject));
+        },responseHandler.bind(null,candles,resolve,reject));
     });
 };
 
-function responseHandler(resolve,reject,response){
+function responseHandler(data,resolve,reject,response){
     if(!response.result){
         reject('error');
     } else {

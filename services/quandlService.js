@@ -1,15 +1,13 @@
 var request = require('request');
 var moment = require('moment');
 
-
 var URI = 'https://www.quandl.com/api/v3/datasets/NSE/<STOCK>.json';
 var API_KEY = 'kxeEoL4RejR54Ae4VPPg';
 var CANDLES_TO_DISPLAY = 180;
 var MA1 = 8;
 var MA2 = 21;
 var MA3 = 55;
-var CANDLES_TO_FETCH = 500;//CANDLES_TO_DISPLAY + MA3 - 1;
-
+var CANDLES_TO_FETCH = 300;//CANDLES_TO_DISPLAY + MA3 - 1;
 
 var transformCandleData = function (symbol) {
     return function (datum) {
@@ -30,9 +28,9 @@ var transformCandleData = function (symbol) {
     };
 };
 
-
-exports.getCandleData = function (params) {
-    var stock = params.stock, endDate = params.endDate;
+exports.getCandles = function (params) {
+    var endDate = params.endDate;
+    var stock = params.stock.replace('&','').replace('-','_');
     return new Promise(function (resolve, reject) {
         request({
             uri: URI.replace('<STOCK>', stock),
