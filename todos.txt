@@ -1,0 +1,6 @@
+- diff between high and bolling bands
+- candle body out of bollinger bands
+- ascending triangle
+- ma-price cross over
+- ma-ma cross over
+- Hilbert Sine Wave Support and Resistance - pine

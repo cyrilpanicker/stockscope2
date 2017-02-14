@@ -1,0 +1,1 @@
+sourcetype=process maCrossedAboveSince<5  | where maCrossedAboveSince<maCrossedBelowSince  | sort maCrossedAboveSince,squeezeOffSince

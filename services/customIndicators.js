@@ -1,9 +1,10 @@
+var d3 = require('d3');
 var indicators = require('./indicators');
 
 exports.squeeze = function(candles){
     return new Promise(function(resolve,reject){
         var bbPeriod = 20;
-        var bbDeviationMultiplier = 2;
+        var bbDeviationMultiplier = 1.5;
         var kcPeriod = 20;
         var kcMultiplier = 1.5;
         var bbBasisPromise = indicators.sma(candles,'close',bbPeriod);
@@ -62,4 +63,138 @@ exports.squeezeOffSince = function(candles){
         }
         return Promise.resolve(counter);
     });
+};
+
+exports.crossAboveDates = function(data1,data2){
+    data1 = data1.slice(-180);
+    data2 = data2.slice(-180);
+    var dateScale = d3.scale.ordinal()
+        .domain(data1.map(function(datum){return datum.date;}))
+        .rangePoints([0,1000]);
+    var values = data1.map(function(datum){return datum.value;})
+        .concat(data2.map(function(datum){return datum.value;}));
+    var valueScale = d3.scale.linear()
+        .domain([d3.min(values),d3.max(values)])
+        .range([0,1000]);
+    var getPoint = function(datum){
+        var point = {};
+        point.x = dateScale(datum.date);
+        point.y = valueScale(datum.value);
+        return point;
+    };
+    var pointCrosses = [];
+    var result = [];
+    for(var i=1; i<data1.length; i++){
+        var point11 = getPoint(data1[i-1]);
+        var point12 = getPoint(data1[i]);
+        var point21 = getPoint(data2[i-1]);
+        var point22 = getPoint(data2[i]);
+        if (point12.y < point22.y) {
+            continue;
+        }
+        var line1 = getLine(point11,point12);
+        var line2 = getLine(point21,point22);
+        var intersection = getIntersection(line1,line2);
+        if(point11.x<intersection.x && intersection.x<=point12.x){
+            pointCrosses.push(intersection);
+        }
+        pointCrosses.forEach(function(point){
+            result.push(dateScale.domain()[d3.bisect(dateScale.range(),point.x)]);
+        });
+    }
+    return result;
+};
+
+exports.crossBelowDates = function(data1,data2){
+    data1 = data1.slice(-180);
+    data2 = data2.slice(-180);
+    var dateScale = d3.scale.ordinal()
+        .domain(data1.map(function(datum){return datum.date;}))
+        .rangePoints([0,1000]);
+    var values = data1.map(function(datum){return datum.value;})
+        .concat(data2.map(function(datum){return datum.value;}));
+    var valueScale = d3.scale.linear()
+        .domain([d3.min(values),d3.max(values)])
+        .range([0,1000]);
+    var getPoint = function(datum){
+        var point = {};
+        point.x = dateScale(datum.date);
+        point.y = valueScale(datum.value);
+        return point;
+    };
+    var pointCrosses = [];
+    var result = [];
+    for(var i=1; i<data1.length; i++){
+        var point11 = getPoint(data1[i-1]);
+        var point12 = getPoint(data1[i]);
+        var point21 = getPoint(data2[i-1]);
+        var point22 = getPoint(data2[i]);
+        if (point12.y >= point22.y) {
+            continue;
+        }
+        var line1 = getLine(point11,point12);
+        var line2 = getLine(point21,point22);
+        var intersection = getIntersection(line1,line2);
+        if(point11.x<intersection.x && intersection.x<=point12.x){
+            pointCrosses.push(intersection);
+        }
+        pointCrosses.forEach(function(point){
+            result.push(dateScale.domain()[d3.bisect(dateScale.range(),point.x)]);
+        });
+    }
+    return result;
+};
+
+exports.maCrossedAboveSince = function(candles){
+    var promise1 = indicators.sma(candles,'close',9);
+    var promise2 = indicators.sma(candles,'close',21);
+    return Promise.all([promise1,promise2]).then(function(values){
+        var sma1 = values[0];
+        var sma2 = values[1];
+        var crossAboveDates = exports.crossAboveDates(sma1,sma2);
+        if(!crossAboveDates.length){
+            return Promise.resolve(0);
+        }else{
+            var lastDate = crossAboveDates[crossAboveDates.length-1];
+            var dateArray = candles.map(function(candle){return candle.date;});
+            var index = dateArray.indexOf(lastDate);
+            return Promise.resolve(dateArray.length-index);
+        }
+    },function(error){
+        return Promise.reject(error);
+    });
+};
+
+exports.maCrossedBelowSince = function(candles){
+    var promise1 = indicators.sma(candles,'close',9);
+    var promise2 = indicators.sma(candles,'close',21);
+    return Promise.all([promise1,promise2]).then(function(values){
+        var sma1 = values[0];
+        var sma2 = values[1];
+        var crossBelowDates = exports.crossBelowDates(sma1,sma2);
+        if(!crossBelowDates.length){
+            return Promise.resolve(0);
+        }else{
+            var lastDate = crossBelowDates[crossBelowDates.length-1];
+            var dateArray = candles.map(function(candle){return candle.date;});
+            var index = dateArray.indexOf(lastDate);
+            return Promise.resolve(dateArray.length-index);
+        }
+    },function(error){
+        return Promise.reject(error);
+    });
+};
+
+var getLine = function(point1,point2){
+    var line = {};
+    line.slope = (point2.y - point1.y)/(point2.x - point1.x);
+    line.intercept = point1.y - line.slope*point1.x;
+    return line;
+};
+
+var getIntersection = function(line1,line2){
+    var point = {};
+    point.x = (line2.intercept - line1.intercept)/(line1.slope - line2.slope);
+    point.y = (line2.slope*line1.intercept - line1.slope*line2.intercept)/(line2.slope - line1.slope);
+    return point;
 };
