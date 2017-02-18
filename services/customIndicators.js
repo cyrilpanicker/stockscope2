@@ -185,6 +185,44 @@ exports.maCrossedBelowSince = function(candles){
     });
 };
 
+exports.momentum = function(candles){
+    // val = linreg(source  -  avg(avg(highest(high, lengthKC), lowest(low, lengthKC)),sma(close,lengthKC)), lengthKC,0)
+    var period = 20;
+    var avg = indicators.avg;
+    return Promise.all([
+        indicators.highest(candles,'high',period),
+        indicators.lowest(candles,'low',period),
+        indicators.sma(candles,'close',period)
+    ]).then(function(values){
+        var highest = values[0];
+        var lowest = values[1];
+        var sma = values[2];
+        var data1 = highest.map(function(highestItem){
+            return {
+                date:highestItem.date,
+                highest:highestItem.value,
+                lowest:lowest.find(function(lowestItem){return highestItem.date===lowestItem.date;}).value
+            };
+        });
+        var average1 = avg(data1,['highest','lowest']);
+        var data2 = sma.map(function(smaItem){
+            return {
+                date:smaItem.date,
+                sma:smaItem.value,
+                average1:average1.find(function(item){return item.date===smaItem.date;}).value
+            };
+        });
+        var average2 = avg(data2,['sma','average1']);
+        var data3 = average2.map(function(item){
+            return {
+                date:item.date,
+                value:candles.find(function(candle){return candle.date===item.date}).close - item.value
+            };
+        });
+        return indicators.linreg(data3,'value',period);
+    });
+}
+
 var getLine = function(point1,point2){
     var line = {};
     line.slope = (point2.y - point1.y)/(point2.x - point1.x);

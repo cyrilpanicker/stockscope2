@@ -1,4 +1,5 @@
 var talib = require('talib');
+var d3 = require('d3');
 
 exports.sma = function(data,property,period){
     return new Promise(function(resolve,reject){
@@ -51,6 +52,55 @@ exports.adx = function(candles,period){
         },responseHandler.bind(null,candles,resolve,reject));
     });
 };
+
+exports.linreg = function(data,property,period){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'LINEARREG',
+            inReal:data.map(function(datum){return datum[property];}),
+            startIdx:0,
+            endIdx:data.length-1,
+            optInTimePeriod:period
+        },responseHandler.bind(null,data,resolve,reject));
+    });
+}
+
+exports.highest = function(data,property,period){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'MAX',
+            inReal:data.map(function(datum){return datum[property];}),
+            startIdx:0,
+            endIdx:data.length-1,
+            optInTimePeriod:period
+        },responseHandler.bind(null,data,resolve,reject));
+    });
+}
+
+exports.lowest = function(data,property,period){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'MIN',
+            inReal:data.map(function(datum){return datum[property];}),
+            startIdx:0,
+            endIdx:data.length-1,
+            optInTimePeriod:period
+        },responseHandler.bind(null,data,resolve,reject));
+    });
+}
+
+exports.avg = function(data,properties){
+    var result = [];
+    data.forEach(function(datum){
+        result.push({
+            date:datum.date,
+            value:d3.mean(properties.map(function(property){
+                return datum[property];
+            }))
+        });
+    });
+    return result;
+}
 
 function responseHandler(data,resolve,reject,response){
     if(!response.result){
