@@ -1,1 +1,5 @@
-sourcetype=process maCrossedAboveSince<5  | where maCrossedAboveSince<maCrossedBelowSince  | sort maCrossedAboveSince,squeezeOffSince
+sourcetype=process
+momentum<0
+momentum_direction=up
+| sort momentum_direction_changed_since, momentum
+----------------------------------------------

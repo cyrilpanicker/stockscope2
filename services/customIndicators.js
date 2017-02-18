@@ -76,19 +76,13 @@ exports.crossAboveDates = function(data1,data2){
     var valueScale = d3.scale.linear()
         .domain([d3.min(values),d3.max(values)])
         .range([0,1000]);
-    var getPoint = function(datum){
-        var point = {};
-        point.x = dateScale(datum.date);
-        point.y = valueScale(datum.value);
-        return point;
-    };
     var pointCrosses = [];
     var result = [];
     for(var i=1; i<data1.length; i++){
-        var point11 = getPoint(data1[i-1]);
-        var point12 = getPoint(data1[i]);
-        var point21 = getPoint(data2[i-1]);
-        var point22 = getPoint(data2[i]);
+        var point11 = getPoint(data1[i-1],dateScale,valueScale);
+        var point12 = getPoint(data1[i],dateScale,valueScale);
+        var point21 = getPoint(data2[i-1],dateScale,valueScale);
+        var point22 = getPoint(data2[i],dateScale,valueScale);
         if (point12.y < point22.y) {
             continue;
         }
@@ -116,19 +110,13 @@ exports.crossBelowDates = function(data1,data2){
     var valueScale = d3.scale.linear()
         .domain([d3.min(values),d3.max(values)])
         .range([0,1000]);
-    var getPoint = function(datum){
-        var point = {};
-        point.x = dateScale(datum.date);
-        point.y = valueScale(datum.value);
-        return point;
-    };
     var pointCrosses = [];
     var result = [];
     for(var i=1; i<data1.length; i++){
-        var point11 = getPoint(data1[i-1]);
-        var point12 = getPoint(data1[i]);
-        var point21 = getPoint(data2[i-1]);
-        var point22 = getPoint(data2[i]);
+        var point11 = getPoint(data1[i-1],dateScale,valueScale);
+        var point12 = getPoint(data1[i],dateScale,valueScale);
+        var point21 = getPoint(data2[i-1],dateScale,valueScale);
+        var point22 = getPoint(data2[i],dateScale,valueScale);
         if (point12.y >= point22.y) {
             continue;
         }
@@ -220,17 +208,45 @@ exports.momentum = function(candles){
             };
         });
         return indicators.linreg(data3,'value',period);
+    }).then(function(momentum){
+        var results = [];
+        for(var i=1;i<momentum.length;i++){
+            var currentValue = momentum[i].value;
+            var previousValue = momentum[i-1].value;
+            var result = {};
+            result.date = momentum[i].date;
+            result.value = currentValue.toFixed(2);
+            result.direction = currentValue > previousValue ? 'up': 'down';
+            results.push(result); 
+            var count = 0;
+            for(var j=i-1;j>=0;j--){
+                if(results[j].direction !== result.direction){
+                    break;
+                }else{
+                    count++;
+                }
+            }
+            result.directionChangedSince = count;
+        }
+        return Promise.resolve(results);
     });
 }
 
-var getLine = function(point1,point2){
+function getPoint(datum,dateScale,valueScale) {
+    var point = {};
+    point.x = dateScale(datum.date);
+    point.y = valueScale(datum.value);
+    return point;
+}
+
+function getLine(point1,point2){
     var line = {};
     line.slope = (point2.y - point1.y)/(point2.x - point1.x);
     line.intercept = point1.y - line.slope*point1.x;
     return line;
 };
 
-var getIntersection = function(line1,line2){
+function getIntersection(line1,line2){
     var point = {};
     point.x = (line2.intercept - line1.intercept)/(line1.slope - line2.slope);
     point.y = (line2.slope*line1.intercept - line1.slope*line2.intercept)/(line2.slope - line1.slope);

@@ -1,11 +1,11 @@
-- momentum indicator - bottom to top coupled with ma 
+x momentum indicator
+- slope of curve
 - diff between high and bollinger bands
 - candle body out of bollinger bands
 - ascending triangle
 - ma-price cross over
 x ma-ma cross over
 - chris moody bottoms indicator
-- Hilbert Sine Wave Support and Resistance - pine
 - adx
 - gaps
 - linear regression on close coupled with momentum

@@ -18,9 +18,9 @@ var currentDate = new Date();
 //     return customIndicators.momentum(candles);
 // },function(error){
 //     return Promise.reject(error);
-// }).then(function(momentum){
-//     momentum.forEach(function(datum){
-//         console.log(datum.date+'\t'+datum.value);
+// }).then(function(results){
+//     results.forEach(function(result){
+//         console.log(result.date+'\t'+result.value+'\t'+result.direction+'\t'+result.changedSince);
 //     });
 // },function(error){
 //     console.log(error);
@@ -43,32 +43,40 @@ function processStocks(){
         return Promise.all([
             customIndicators.squeezeOffSince(candles),
             customIndicators.maCrossedAboveSince(candles),
-            customIndicators.maCrossedBelowSince(candles)
+            customIndicators.maCrossedBelowSince(candles),
+            customIndicators.momentum(candles)
         ]);
     },function(error){
         return Promise.reject(error);
     }).then(function(values){
         var lastCandle = _candles[_candles.length-1];
+        var momentumResults = values[3][values[3].length-1];
         logProcessedInfo({
-            id:stockPointer,
-            stock:stock,
-            date:lastCandle.date,
-            price:lastCandle.close,
-            squeezeOffSince:values[0],
-            maCrossedAboveSince:values[1],
-            maCrossedBelowSince:values[2],
-            error:null
+            'id':stockPointer,
+            'stock':stock,
+            'date':lastCandle.date,
+            'price':lastCandle.close,
+            'squeeze-off-since':values[0],
+            'ma-crossed-above-since':values[1],
+            'ma-crossed-below-since':values[2],
+            'momentum':momentumResults.value,
+            'momentum-direction':momentumResults.direction,
+            'momentum-direction-changed-since':momentumResults.directionChangedSince,
+            'error':null
         });
     },function(error){
         logProcessedInfo({
-            id:stockPointer,
-            stock:stock,
-            date:null,
-            price:null,
-            squeezeOffSince:null,
-            maCrossedAboveSince:null,
-            maCrossedBelowSince:null,
-            error:error
+            'id':stockPointer,
+            'stock':stock,
+            'date':null,
+            'price':null,
+            'squeeze-off-since':null,
+            'ma-crossed-above-since':null,
+            'ma-crossed-below-since':null,
+            'momentum':null,
+            'momentum-direction':null,
+            'momentum-direction-changed-since':null,
+            'error':error
         });
     }).then(function(){
         stockPointer++;
@@ -88,13 +96,16 @@ function processStocks(){
 
 function logProcessedInfo(params) {
     processLogger.info(
-        params.id+' | '+
-        params.stock+' | '+
-        params.date+' | '+
-        params.price+' | '+
-        params.squeezeOffSince+' | '+
-        params.maCrossedAboveSince+' | '+
-        params.maCrossedBelowSince+' | '+
-        params.error
+        params['id']+' | '+
+        params['stock']+' | '+
+        params['date']+' | '+
+        params['price']+' | '+
+        params['squeeze-off-since']+' | '+
+        params['ma-crossed-above-since']+' | '+
+        params['ma-crossed-below-since']+' | '+
+        params['momentum']+' | '+
+        params['momentum-direction']+' | '+
+        params['momentum-direction-changed-since']+' | '+
+        params['error']
     );
 }
