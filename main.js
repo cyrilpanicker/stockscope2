@@ -12,6 +12,21 @@ var stocksList = [];
 var stockPointer = 0;
 var currentDate = new Date();
 
+//----------------------------------------------------
+// var _candles = [];
+// quandlService.getCandles({stock:'TVSMOTOR',endDate:new Date()}).then(function(candles){
+//     return customIndicators.momentum(candles);
+// },function(error){
+//     return Promise.reject(error);
+// }).then(function(momentum){
+//     momentum.forEach(function(datum){
+//         console.log(datum.date+'\t'+datum.value);
+//     });
+// },function(error){
+//     console.log(error);
+// });
+//----------------------------------------------------
+
 functionalLogger.info('reading from file "'+stocksListFile+'"');
 
 helpers.readFile(stocksListFile).then(function(data){
