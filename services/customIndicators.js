@@ -4,7 +4,7 @@ var indicators = require('./indicators');
 exports.squeeze = function(candles){
     return new Promise(function(resolve,reject){
         var bbPeriod = 20;
-        var bbDeviationMultiplier = 1.5;
+        var bbDeviationMultiplier = 2;
         var kcPeriod = 20;
         var kcMultiplier = 1.5;
         var bbBasisPromise = indicators.sma(candles,'close',bbPeriod);
@@ -230,6 +230,28 @@ exports.momentum = function(candles){
         }
         return Promise.resolve(results);
     });
+}
+
+exports.slope = function(data){
+    var results = [];
+    data = data.slice(-250);
+    var dateScale = d3.scale.ordinal()
+        .domain(data.map(function(datum){return datum.date;}))
+        .rangePoints([0,1000]);
+    var values = data.map(function(datum){return datum.value;});
+    var valueScale = d3.scale.linear()
+        .domain([d3.min(values),d3.max(values)])
+        .range([0,1000]);
+    for(var i=1;i<data.length;i++){
+        var point1 = getPoint(data[i-1],dateScale,valueScale);
+        var point2 = getPoint(data[i],dateScale,valueScale);
+        var line = getLine(point1,point2);
+        results.push({
+            date:data[i].date,
+            value:line.slope.toFixed(2)
+        });
+    }
+    return results;
 }
 
 function getPoint(datum,dateScale,valueScale) {

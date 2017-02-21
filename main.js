@@ -14,13 +14,14 @@ var currentDate = new Date();
 
 //----------------------------------------------------
 // var _candles = [];
-// quandlService.getCandles({stock:'TVSMOTOR',endDate:new Date()}).then(function(candles){
-//     return customIndicators.momentum(candles);
+// quandlService.getCandles({stock:'TECHM',endDate:new Date()}).then(function(candles){
+//     return indicators.sma(candles,'close',9);
 // },function(error){
 //     return Promise.reject(error);
-// }).then(function(results){
-//     results.forEach(function(result){
-//         console.log(result.date+'\t'+result.value+'\t'+result.direction+'\t'+result.changedSince);
+// }).then(function(sma){
+//     var smaSlope = customIndicators.slope(sma);
+//     smaSlope.forEach(function(datum){
+//         console.log(datum.date+'\t'+datum.value);
 //     });
 // },function(error){
 //     console.log(error);

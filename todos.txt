@@ -9,3 +9,11 @@ x ma-ma cross over
 - adx
 - gaps
 - linear regression on close coupled with momentum
+
+- when squeeze turning off aligns with momentum direction change or sign change
+- upward momentum + ma9 with positive slope
+- slope direction change since 0-slope
+- buy when momentum is upward and ema9 slope is positive,
+    sell either when ema9 slope turns negative or when momentum turns negative.
+- pivots
+- 5 day price slope
