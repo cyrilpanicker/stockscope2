@@ -10,6 +10,8 @@ x ma-ma cross over
 - gaps
 x distanceFromlowerPivot
 - linear regression on close coupled with momentum
+- bullish or bearish candle
+- pivot level crossed
 
 - when squeeze turning off aligns with momentum direction change or sign change
 - upward momentum + ma9 with positive slope
