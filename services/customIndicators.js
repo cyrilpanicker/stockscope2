@@ -232,6 +232,67 @@ exports.momentum = function(candles){
     });
 }
 
+exports.pivots = function(candles){
+    var date = new Date(candles[candles.length-1].date);
+    var results = [];
+    date.setDate(1);
+    date.setMonth(date.getMonth()-1);
+    var _firstDate = new Date(date.getFullYear(),date.getMonth(),date.getDate());
+    var firstDate = _firstDate.getTime();
+    var _lastDate = new Date(_firstDate.getFullYear(),_firstDate.getMonth()+1,0);
+    var lastDate = _lastDate.getTime();
+    candles = candles.filter(function(candle){
+        var date = new Date(candle.date);
+        date = new Date(date.getFullYear(),date.getMonth(),date.getDate());
+        return (date >= firstDate && date <= lastDate);
+    });
+    var open = candles[0].open;
+    var close = candles[candles.length-1].close;
+    var high = d3.max(candles.map(function(candle){return candle.high;}));
+    var low = d3.min(candles.map(function(candle){return candle.low;}));
+    var pp = (high + low + close)/3;
+    var s1 = 2 * pp - high;
+    var r1 = 2 * pp - low;
+    var s2 = pp - (high - low);
+    var r2 = pp + (high - low);
+    var s3 = low - 2 * (high - pp);
+    var r3 = high + 2 * (pp - low);
+    var s4 = low - 3 * (high - pp);
+    var r4 = high + 3 * (pp - low);
+    return [
+        r4.toFixed(2),
+        r3.toFixed(2),
+        r2.toFixed(2),
+        r1.toFixed(2),
+        pp.toFixed(2),
+        s1.toFixed(2),
+        s2.toFixed(2),       
+        s3.toFixed(2),
+        s4.toFixed(2)
+    ];  
+};
+
+exports.distanceFromLowerPivot = function(candles){
+    var pivots = exports.pivots(candles);
+    var price = candles[candles.length-1].close;
+    var higherPivot = null;
+    var lowerPivot = null;
+    for(var i=0;i<pivots.length-1;i++){
+        if(price < pivots[i] && price >= pivots[i+1]){
+            higherPivot = pivots[i]; lowerPivot = pivots[i+1];
+            // console.log(higherPivot);
+            // console.log(price);
+            // console.log(lowerPivot);
+        }
+    }
+    if(higherPivot !== null && lowerPivot !== null){
+        var value = ((price-lowerPivot)/(higherPivot-lowerPivot))*100
+        return value.toFixed(2);   
+    } else{
+        return 'price-beyond-pivots';
+    }
+};
+
 exports.slope = function(data){
     var results = [];
     data = data.slice(-250);

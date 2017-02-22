@@ -15,16 +15,17 @@ var currentDate = new Date();
 //----------------------------------------------------
 // var _candles = [];
 // quandlService.getCandles({stock:'TECHM',endDate:new Date()}).then(function(candles){
-//     return indicators.sma(candles,'close',9);
+//     // return indicators.sma(candles,'close',9);
+//     console.log(customIndicators.distanceFromLowerPivot(candles));
 // },function(error){
-//     return Promise.reject(error);
+//     // return Promise.reject(error);
 // }).then(function(sma){
-//     var smaSlope = customIndicators.slope(sma);
-//     smaSlope.forEach(function(datum){
-//         console.log(datum.date+'\t'+datum.value);
-//     });
+//     // var smaSlope = customIndicators.slope(sma);
+//     // smaSlope.forEach(function(datum){
+//     //     console.log(datum.date+'\t'+datum.value);
+//     // });
 // },function(error){
-//     console.log(error);
+//     // console.log(error);
 // });
 //----------------------------------------------------
 
@@ -60,6 +61,7 @@ function processStocks(){
             'squeeze-off-since':values[0],
             'ma-crossed-above-since':values[1],
             'ma-crossed-below-since':values[2],
+            'distance-from-lower-pivot':customIndicators.distanceFromLowerPivot(_candles),
             'momentum':momentumResults.value,
             'momentum-direction':momentumResults.direction,
             'momentum-direction-changed-since':momentumResults.directionChangedSince,
@@ -74,6 +76,7 @@ function processStocks(){
             'squeeze-off-since':null,
             'ma-crossed-above-since':null,
             'ma-crossed-below-since':null,
+            'distance-from-lower-pivot':null,
             'momentum':null,
             'momentum-direction':null,
             'momentum-direction-changed-since':null,
@@ -104,6 +107,7 @@ function logProcessedInfo(params) {
         params['squeeze-off-since']+' | '+
         params['ma-crossed-above-since']+' | '+
         params['ma-crossed-below-since']+' | '+
+        params['distance-from-lower-pivot'] + ' | '+
         params['momentum']+' | '+
         params['momentum-direction']+' | '+
         params['momentum-direction-changed-since']+' | '+
