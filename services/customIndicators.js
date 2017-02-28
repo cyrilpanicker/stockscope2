@@ -1,6 +1,97 @@
 var d3 = require('d3');
 var indicators = require('./indicators');
 
+exports.supports = function(candles,window){
+    return indicators.lowest(candles,'low',window).then(function(lowest){
+        try{
+            var lastSupport=null;
+            var _result = [];
+            var result = [];
+            var value;
+            for(var i=0;i<lowest.length;i++){
+                var low = candles.find(function(candle){return candle.date===lowest[i].date;}).low;
+                if(low<=lowest[i].value){
+                    lastSupport = low;
+                }
+                _result.push({date:lowest[i].date,value:lastSupport})
+            }
+            console.log(_result[0]);
+            console.log(_result[1]);
+            for(var i=0;i<_result.length;i++){
+                if(i === _result.length-1){
+                    value = _result[i-1].value;
+                }else{
+                    if(!_result[i].value || !_result[i+1].value){
+                        value = null;
+                    }else if(_result[i].value !== _result[i+1].value){
+                        if(i && _result[i].value === _result[i-1].value){
+                            value = _result[i].value;
+                        }else{
+                            value = null;
+                        }
+                    }else{
+                        value = _result[i].value;
+                    }
+                }
+                result.push({date:_result[i].date,value:value});
+            }
+            return Promise.resolve(result);
+        }catch(e){
+            throw e;
+        }
+    });
+};
+
+exports.support2 = function(candles){
+    return exports.supports(candles,21).then(function(supports){
+        return Promise.resolve(supports[supports.length-1].value);
+    });
+};
+
+exports.support2Since = function(candles){
+    return exports.supports(candles,21).then(function(supports){
+        var support = supports[supports.length-1].value;
+        if(!support){
+            return Promise.resolve(null);
+        }else{
+            var counter = 0;
+            for(var i=supports.length-1; i>=0;i--){
+                if(supports[i].value === support){
+                    counter++;                
+                }else{
+                    break;
+                }
+            }
+            return Promise.resolve(counter);   
+        }
+    });
+};
+
+exports.support1 = function(candles){
+    return exports.supports(candles,8).then(function(supports){
+        return Promise.resolve(supports[supports.length-1].value);
+    });
+};
+
+exports.support1Since = function(candles){
+    return exports.supports(candles,8).then(function(supports){
+        var support = supports[supports.length-1].value;
+        if(!support){
+            return Promise.resolve(null);
+        }else{
+            var counter = 0;
+            for(var i=supports.length-1; i>=0;i--){
+                if(supports[i].value === support){
+                    counter++;                
+                }else{
+                    break;
+                }
+            }
+            return Promise.resolve(counter);   
+        }
+    });
+};
+
 exports.squeeze = function(candles){
     return new Promise(function(resolve,reject){
         var bbPeriod = 20;

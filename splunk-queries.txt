@@ -6,5 +6,10 @@ momentum_direction=up
 sourcetype=process
 momentum<0
 momentum_direction=up
+| sort distance_from_lower_pivot, momentum_direction_changed_since
+----------------------------------------------
+sourcetype=process
+momentum<0
+momentum_direction=up
 | sort momentum_direction_changed_since, distance_from_lower_pivot
 ----------------------------------------------

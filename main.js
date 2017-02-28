@@ -14,18 +14,17 @@ var currentDate = new Date();
 
 //----------------------------------------------------
 // var _candles = [];
-// quandlService.getCandles({stock:'TECHM',endDate:new Date()}).then(function(candles){
-//     // return indicators.sma(candles,'close',9);
-//     console.log(customIndicators.distanceFromLowerPivot(candles));
+// quandlService.getCandles({stock:'PNB',endDate:new Date()}).then(function(candles){
+//     return customIndicators.support2Since(candles);
 // },function(error){
-//     // return Promise.reject(error);
-// }).then(function(sma){
-//     // var smaSlope = customIndicators.slope(sma);
-//     // smaSlope.forEach(function(datum){
+//     return Promise.reject(error);
+// }).then(function(supports){
+//     // supports.forEach(function(datum){
 //     //     console.log(datum.date+'\t'+datum.value);
 //     // });
+//     console.log(supports);
 // },function(error){
-//     // console.log(error);
+//     console.log(error);
 // });
 //----------------------------------------------------
 
@@ -46,7 +45,11 @@ function processStocks(){
             customIndicators.squeezeOffSince(candles),
             customIndicators.maCrossedAboveSince(candles),
             customIndicators.maCrossedBelowSince(candles),
-            customIndicators.momentum(candles)
+            customIndicators.momentum(candles),
+            customIndicators.support1(candles),
+            customIndicators.support2(candles),
+            customIndicators.support1Since(candles),
+            customIndicators.support2Since(candles)
         ]);
     },function(error){
         return Promise.reject(error);
@@ -65,6 +68,10 @@ function processStocks(){
             'momentum':momentumResults.value,
             'momentum-direction':momentumResults.direction,
             'momentum-direction-changed-since':momentumResults.directionChangedSince,
+            'support1':values[4],
+            'support2':values[5],
+            'support1-since':values[6],
+            'support2-since':values[7],
             'error':null
         });
     },function(error){
@@ -80,6 +87,10 @@ function processStocks(){
             'momentum':null,
             'momentum-direction':null,
             'momentum-direction-changed-since':null,
+            'support1':null,
+            'support2':null,
+            'support1-since':null,
+            'support2-since':null,
             'error':error
         });
     }).then(function(){
@@ -111,6 +122,10 @@ function logProcessedInfo(params) {
         params['momentum']+' | '+
         params['momentum-direction']+' | '+
         params['momentum-direction-changed-since']+' | '+
+        params['support1']+' | '+
+        params['support2']+' | '+
+        params['support1-since']+' | '+
+        params['support2-since']+' | '+
         params['error']
     );
 }
