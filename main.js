@@ -11,18 +11,19 @@ var stocksListFile = mode !== 'production' ? 'data/stocks-list.test.json' : 'dat
 var stocksList = [];
 var stockPointer = 0;
 var currentDate = new Date();
+// var currentDate = new Date(2017,2,5);
 
 //----------------------------------------------------
 // var _candles = [];
-// quandlService.getCandles({stock:'PNB',endDate:new Date()}).then(function(candles){
-//     return customIndicators.support2Since(candles);
+// quandlService.getCandles({stock:'MMTC',endDate:new Date()}).then(function(candles){
+//     return customIndicators.support1(candles)
 // },function(error){
 //     return Promise.reject(error);
-// }).then(function(supports){
+// }).then(function(support){
+//     console.log(support);
 //     // supports.forEach(function(datum){
 //     //     console.log(datum.date+'\t'+datum.value);
 //     // });
-//     console.log(supports);
 // },function(error){
 //     console.log(error);
 // });
@@ -49,7 +50,8 @@ function processStocks(){
             customIndicators.support1(candles),
             customIndicators.support2(candles),
             customIndicators.support1Since(candles),
-            customIndicators.support2Since(candles)
+            customIndicators.support2Since(candles),
+            customIndicators.supportOverlapRatio(candles)
         ]);
     },function(error){
         return Promise.reject(error);
@@ -61,17 +63,18 @@ function processStocks(){
             'stock':stock,
             'date':lastCandle.date,
             'price':lastCandle.close,
-            'squeeze-off-since':values[0],
-            'ma-crossed-above-since':values[1],
-            'ma-crossed-below-since':values[2],
-            'distance-from-lower-pivot':customIndicators.distanceFromLowerPivot(_candles),
+            'squeeze_off_since':values[0],
+            'ma_crossed_above_since':values[1],
+            'ma_crossed_below_since':values[2],
+            'distance_from_lower_pivot':customIndicators.distanceFromLowerPivot(_candles),
             'momentum':momentumResults.value,
-            'momentum-direction':momentumResults.direction,
-            'momentum-direction-changed-since':momentumResults.directionChangedSince,
+            'momentum_direction':momentumResults.direction,
+            'momentum_direction_changed_since':momentumResults.directionChangedSince,
             'support1':values[4],
             'support2':values[5],
-            'support1-since':values[6],
-            'support2-since':values[7],
+            'support1_since':values[6],
+            'support2_since':values[7],
+            'support_overlap_ratio':values[8],
             'error':null
         });
     },function(error){
@@ -80,17 +83,18 @@ function processStocks(){
             'stock':stock,
             'date':null,
             'price':null,
-            'squeeze-off-since':null,
-            'ma-crossed-above-since':null,
-            'ma-crossed-below-since':null,
-            'distance-from-lower-pivot':null,
+            'squeeze_off_since':null,
+            'ma_crossed_above_since':null,
+            'ma_crossed_below_since':null,
+            'distance_from_lower_pivot':null,
             'momentum':null,
-            'momentum-direction':null,
-            'momentum-direction-changed-since':null,
+            'momentum_direction':null,
+            'momentum_direction_changed_since':null,
             'support1':null,
             'support2':null,
-            'support1-since':null,
-            'support2-since':null,
+            'support1_since':null,
+            'support2_since':null,
+            'support_overlap_ratio':null,
             'error':error
         });
     }).then(function(){
@@ -110,22 +114,11 @@ function processStocks(){
 }
 
 function logProcessedInfo(params) {
-    processLogger.info(
-        params['id']+' | '+
-        params['stock']+' | '+
-        params['date']+' | '+
-        params['price']+' | '+
-        params['squeeze-off-since']+' | '+
-        params['ma-crossed-above-since']+' | '+
-        params['ma-crossed-below-since']+' | '+
-        params['distance-from-lower-pivot'] + ' | '+
-        params['momentum']+' | '+
-        params['momentum-direction']+' | '+
-        params['momentum-direction-changed-since']+' | '+
-        params['support1']+' | '+
-        params['support2']+' | '+
-        params['support1-since']+' | '+
-        params['support2-since']+' | '+
-        params['error']
-    );
+    var logMesssage = '';
+    for(var param in params){
+        if(params.hasOwnProperty(param)){
+            logMesssage = logMesssage + param + '='+ params[param] + ' | ';
+        }
+    }
+    processLogger.info(logMesssage);
 }

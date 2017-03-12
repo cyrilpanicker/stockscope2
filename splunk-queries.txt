@@ -13,3 +13,4 @@ momentum<0
 momentum_direction=up
 | sort momentum_direction_changed_since, distance_from_lower_pivot
 ----------------------------------------------
+support_overlap_ratio!=null support_overlap_ratio<1 (support1_since=1 OR support2_since=1) | where support1_since != support2_since | sort support_overlap_ratio

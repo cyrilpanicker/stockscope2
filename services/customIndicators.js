@@ -14,24 +14,14 @@ exports.supports = function(candles,window){
                     lastSupport = low;
                 }
                 _result.push({date:lowest[i].date,value:lastSupport})
-            }
-            console.log(_result[0]);
-            console.log(_result[1]);
-            for(var i=0;i<_result.length;i++){
-                if(i === _result.length-1){
-                    value = _result[i-1].value;
+            }   
+            for(var i=0;i<_result.length-1;i++){
+                if(!_result[i].value || !_result[i+1].value){
+                    value = null;
+                }else if(_result[i].value !== _result[i+1].value){
+                    value = null;
                 }else{
-                    if(!_result[i].value || !_result[i+1].value){
-                        value = null;
-                    }else if(_result[i].value !== _result[i+1].value){
-                        if(i && _result[i].value === _result[i-1].value){
-                            value = _result[i].value;
-                        }else{
-                            value = null;
-                        }
-                    }else{
-                        value = _result[i].value;
-                    }
+                    value = _result[i].value;
                 }
                 result.push({date:_result[i].date,value:value});
             }
@@ -91,6 +81,21 @@ exports.support1Since = function(candles){
         }
     });
 };
+
+exports.supportOverlapRatio = function(candles){
+    return Promise.all([
+        exports.support1(candles),
+        exports.support2(candles)
+    ]).then(function(values){
+        var support1 = values[0];
+        var support2 = values[1];
+        if(support1 === null || support2 === null){
+            return Promise.resolve(null);
+        }else{
+            return Promise.resolve((Math.abs(+((support2-support1)/support2)*100).toFixed(2)));
+        }
+    });
+}
 
 exports.squeeze = function(candles){
     return new Promise(function(resolve,reject){
@@ -371,9 +376,6 @@ exports.distanceFromLowerPivot = function(candles){
     for(var i=0;i<pivots.length-1;i++){
         if(price < pivots[i] && price >= pivots[i+1]){
             higherPivot = pivots[i]; lowerPivot = pivots[i+1];
-            // console.log(higherPivot);
-            // console.log(price);
-            // console.log(lowerPivot);
         }
     }
     if(higherPivot !== null && lowerPivot !== null){
