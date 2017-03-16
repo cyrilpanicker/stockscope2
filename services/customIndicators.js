@@ -97,6 +97,186 @@ exports.supportOverlapRatio = function(candles){
     });
 }
 
+exports.priceSupportRatio = function(candles){
+    return Promise.all([
+        exports.support1(candles),
+        exports.support2(candles)
+    ]).then(function(values){
+        var support1 = values[0];
+        var support2 = values[1];
+        var price = candles[candles.length-1].close;
+        if(support2===null){
+            if(support1===null){
+                return Promise.resolve(null);
+            }else{
+                return Promise.resolve((((price-support1)/support1)*100).toFixed(2));
+            }
+        }else{
+            if(support1===null){
+                return Promise.resolve((((price-support2)/support2)*100).toFixed(2));
+            }else{
+                var support = (support1>support2)?support1:support2;
+                return Promise.resolve((((price-support)/support)*100).toFixed(2));
+            }
+        }
+    });
+}
+
+exports.combinedSupports = function(candles){
+    return Promise.all([
+        exports.supports(candles,8),
+        exports.supports(candles,21)
+    ]).then(function(values){
+        var support1 = values[0];
+        var support2 = values[1];
+        var results1 = [];
+        var results2 = [];
+        var price = candles[candles.length-1].low;
+        var lastLow = null;
+        for(var i = 0; i<support1.length; i++){
+            if(support1[i].value === null){
+                lastLow = null;
+                continue;
+            }else{
+                if(lastLow === null){
+                    results1.push({
+                        date:support1[i].date,
+                        value:support1[i].value,
+                        count:1
+                    });
+                }else{
+                    if(support1[i].value === lastLow){
+                        results1[results1.length-1].count++;
+                    }else{
+                        results1.push({
+                            date:support1[i].date,
+                            value:support1[i].value,
+                            count:1
+                        }); 
+                    }
+                }
+                lastLow = support1[i].value;
+            }
+        }
+        var lastLow = null;
+        for(var i = 0; i<support2.length; i++){
+            if(support2[i].value === null){
+                lastLow = null;
+                continue;
+            }else{
+                if(lastLow === null){
+                    results2.push({
+                        date:support2[i].date,
+                        value:support2[i].value,
+                        count:1
+                    });
+                }else{
+                    if(support2[i].value === lastLow){
+                        results2[results2.length-1].count++;
+                    }else{
+                        results2.push({
+                            date:support2[i].date,
+                            value:support2[i].value,
+                            count:1
+                        }); 
+                    }
+                }
+                lastLow = support2[i].value;
+            }
+        }
+        for(var i=0;i<results2.length;i++){
+            var result1 = results1.find(function(result){ return result.date === results2[i].date; });
+            if(!result1){
+                console.log('error : '+candles[0].symbol);
+                continue;
+            } else if(result1.count < results2[i].count){
+                result1.count = results2[i].count;
+            }
+        }
+        return Promise.resolve(results1);
+    });
+};
+
+exports.previousSupportRatio = function(candles){
+    return Promise.all([
+        exports.combinedSupports(candles),
+        exports.support1(candles),
+        exports.support2(candles)
+    ]).then(function(values){
+        if(values[1]===null && values[2]===null){
+            return Promise.resolve(null);
+        }else{
+            var supports = values[0];
+            var support1 = supports[supports.length-1].value;
+            var support2 = supports[supports.length-2].value;
+            return Promise.resolve((Math.abs(+((support2-support1)/support2)*100).toFixed(2)));   
+        }
+    });
+};
+
+exports.bbw = function(candles){
+    var results = [];
+    return indicators.bollingerBands(candles,14).then(function(values){
+        for(var i=0;i<values.length;i++){
+            results.push({
+                date:values[i].date,
+                value:(values[i].upper-values[i].lower)
+            });
+        }
+        return Promise.resolve(results);
+    });
+}
+
+exports.bbwLows = function(candles,window){
+    var results = [];
+    var bbwValues = [];
+    return exports.bbw(candles).then(function(_bbwValues){
+        bbwValues = _bbwValues;
+        return indicators.lowest(_bbwValues,'value',window);
+    }).then(function(bbwLowestValues){
+        for(var i=0;i<bbwLowestValues.length;i++){
+            var bbwValue = bbwValues.find(function(bbwValue){return bbwValue.date===bbwLowestValues[i].date;}).value;
+            if(bbwValue<=bbwLowestValues[i].value){
+                results.push({
+                    date:bbwLowestValues[i].date,
+                    value:bbwValue
+                });
+            }
+        }
+        return results;
+    });
+};
+
+exports.bbwLow1Since = function(candles){
+    return exports.bbwLows(candles,21).then(function(bbwLows){
+        var date = bbwLows[bbwLows.length-1].date;
+        var counter = 0;
+        for(var i=candles.length-1;i>=0;i--){
+            if(candles[i].date !== date){
+                counter++;
+            }else{
+                break;
+            }
+        }
+        return counter;
+    }); 
+};
+
+exports.bbwLow2Since = function(candles){
+    return exports.bbwLows(candles,55).then(function(bbwLows){
+        var date = bbwLows[bbwLows.length-1].date;
+        var counter = 0;
+        for(var i=candles.length-1;i>=0;i--){
+            if(candles[i].date !== date){
+                counter++;
+            }else{
+                break;
+            }
+        }
+        return counter;
+    }); 
+};
+
 exports.squeeze = function(candles){
     return new Promise(function(resolve,reject){
         var bbPeriod = 20;

@@ -19,3 +19,32 @@ x distanceFromlowerPivot
 - buy when momentum is upward and ema9 slope is positive,
     sell either when ema9 slope turns negative or when momentum turns negative.
 - 5 day price slope
+-------------
+error : AIL
+error : BAJAJCORP
+error : BANKBARODA
+error : ESABINDIA
+error : FCEL
+error : GTLINFRA
+error : GAMMNINFRA
+error : GAMMNINFRA
+error : GUJFLUORO
+error : GIPCL
+error : IVRCLINFRA
+error : IVRCLINFRA
+error : IVRCLINFRA
+error : INDIANB
+error : JPPOWER
+error : JYOTISTRUC
+error : LITL
+error : LINDEINDIA
+error : LINDEINDIA
+error : MANDHANA
+error : MAYURUNIQ
+error : NETWORK18
+error : NITINFIRE
+error : OFSS
+error : PFS
+error : PARSVNATH
+error : PATELENG
+feb 15  

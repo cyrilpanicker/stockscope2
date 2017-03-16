@@ -1,6 +1,7 @@
 var quandlService = require('./services/quandlService');
 var indicators = require('./services/indicators');
 var customIndicators = require('./services/customIndicators');
+var candleStickPatterns = require('./services/candleStickPatterns');
 var loggingService = require('./services/loggingService');
 var helpers = require('./services/helpers');
 var processLogger = loggingService.processLogger;
@@ -11,16 +12,16 @@ var stocksListFile = mode !== 'production' ? 'data/stocks-list.test.json' : 'dat
 var stocksList = [];
 var stockPointer = 0;
 var currentDate = new Date();
-// var currentDate = new Date(2017,2,5);
+// var currentDate = new Date(2017,0,17);
 
 //----------------------------------------------------
 // var _candles = [];
-// quandlService.getCandles({stock:'MMTC',endDate:new Date()}).then(function(candles){
-//     return customIndicators.support1(candles)
+// quandlService.getCandles({stock:'UNIONBANK',endDate:new Date()}).then(function(candles){
+//     return customIndicators.bbwLow2Since(candles);
 // },function(error){
 //     return Promise.reject(error);
-// }).then(function(support){
-//     console.log(support);
+// }).then(function(supports){
+//     console.log(supports);
 //     // supports.forEach(function(datum){
 //     //     console.log(datum.date+'\t'+datum.value);
 //     // });
@@ -43,15 +44,19 @@ function processStocks(){
     quandlService.getCandles({stock:stock,endDate:currentDate}).then(function(candles){
         _candles = candles;
         return Promise.all([
-            customIndicators.squeezeOffSince(candles),
-            customIndicators.maCrossedAboveSince(candles),
-            customIndicators.maCrossedBelowSince(candles),
-            customIndicators.momentum(candles),
-            customIndicators.support1(candles),
-            customIndicators.support2(candles),
+            // customIndicators.squeezeOffSince(candles),
+            // customIndicators.maCrossedAboveSince(candles),
+            // customIndicators.maCrossedBelowSince(candles),
+            // customIndicators.momentum(candles),
+            // customIndicators.support1(candles),
+            // customIndicators.support2(candles),
             customIndicators.support1Since(candles),
             customIndicators.support2Since(candles),
-            customIndicators.supportOverlapRatio(candles)
+            customIndicators.supportOverlapRatio(candles),
+            customIndicators.previousSupportRatio(candles),
+            customIndicators.priceSupportRatio(candles),
+            customIndicators.bbwLow1Since(candles),
+            customIndicators.bbwLow2Since(candles)
         ]);
     },function(error){
         return Promise.reject(error);
@@ -63,18 +68,22 @@ function processStocks(){
             'stock':stock,
             'date':lastCandle.date,
             'price':lastCandle.close,
-            'squeeze_off_since':values[0],
-            'ma_crossed_above_since':values[1],
-            'ma_crossed_below_since':values[2],
-            'distance_from_lower_pivot':customIndicators.distanceFromLowerPivot(_candles),
-            'momentum':momentumResults.value,
-            'momentum_direction':momentumResults.direction,
-            'momentum_direction_changed_since':momentumResults.directionChangedSince,
-            'support1':values[4],
-            'support2':values[5],
-            'support1_since':values[6],
-            'support2_since':values[7],
-            'support_overlap_ratio':values[8],
+            // 'squeeze_off_since':values[0],
+            // 'ma_crossed_above_since':values[1],
+            // 'ma_crossed_below_since':values[2],
+            // 'distance_from_lower_pivot':customIndicators.distanceFromLowerPivot(_candles),
+            // 'momentum':momentumResults.value,
+            // 'momentum_direction':momentumResults.direction,
+            // 'momentum_direction_changed_since':momentumResults.directionChangedSince,
+            // 'support1':values[4],
+            // 'support2':values[5],
+            'support1_since':values[0],
+            'support2_since':values[1],
+            'support_overlap_ratio':values[2],
+            'previous_support_ratio':values[3],
+            'price_support_ratio':values[4],
+            'bb_low1_since':values[5],
+            'bb_low2_since':values[6],
             'error':null
         });
     },function(error){
@@ -83,18 +92,22 @@ function processStocks(){
             'stock':stock,
             'date':null,
             'price':null,
-            'squeeze_off_since':null,
-            'ma_crossed_above_since':null,
-            'ma_crossed_below_since':null,
-            'distance_from_lower_pivot':null,
-            'momentum':null,
-            'momentum_direction':null,
-            'momentum_direction_changed_since':null,
-            'support1':null,
-            'support2':null,
+            // 'squeeze_off_since':null,
+            // 'ma_crossed_above_since':null,
+            // 'ma_crossed_below_since':null,
+            // 'distance_from_lower_pivot':null,
+            // 'momentum':null,
+            // 'momentum_direction':null,
+            // 'momentum_direction_changed_since':null,
+            // 'support1':null,
+            // 'support2':null,
             'support1_since':null,
             'support2_since':null,
             'support_overlap_ratio':null,
+            'previous_support_ratio':null,
+            'price_support_ratio':null,
+            'bb_low1_since':null,
+            'bb_low2_since':null,
             'error':error
         });
     }).then(function(){
@@ -120,5 +133,6 @@ function logProcessedInfo(params) {
             logMesssage = logMesssage + param + '='+ params[param] + ' | ';
         }
     }
+    logMesssage = logMesssage.replace(/\s\|\s$/,'');
     processLogger.info(logMesssage);
 }

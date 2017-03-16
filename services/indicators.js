@@ -13,6 +13,37 @@ exports.sma = function(data,property,period){
     });
 };
 
+exports.bollingerBands = function(candles,period){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'BBANDS',
+            inReal:candles.map(function(candle){return candle.low;}),
+            startIdx:0,
+            endIdx:candles.length-1,
+            optInTimePeriod:period,
+            optInNbDevUp:2,
+            optInNbDevDn:2,
+            optInMAType:null
+        },function(response){
+            if(!response.result){
+                reject('error');
+            } else {
+                var result = [];
+                var _data = candles.slice(response.begIndex);
+                for(var i = 0; i<_data.length; i++){
+                    result.push({
+                        date:_data[i].date,
+                        upper:response.result.outRealUpperBand[i],
+                        middle:response.result.outRealMiddleBand[i],
+                        lower:response.result.outRealLowerBand[i]
+                    });
+                }
+                resolve(result);
+            }
+        });
+    });
+};
+
 exports.stdDev = function(data,property,period){
     return new Promise(function(resolve,reject){
         talib.execute({
