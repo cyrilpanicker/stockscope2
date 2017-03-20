@@ -16,12 +16,12 @@ var currentDate = new Date();
 
 //----------------------------------------------------
 // var _candles = [];
-// quandlService.getCandles({stock:'UNIONBANK',endDate:new Date()}).then(function(candles){
-//     return customIndicators.bbwLow2Since(candles);
+// quandlService.getCandles({stock:'BEML',endDate:new Date()}).then(function(candles){
+//     return customIndicators.supportOverlapRatio(candles);
 // },function(error){
 //     return Promise.reject(error);
 // }).then(function(supports){
-//     console.log(supports);
+//     // console.log(supports);
 //     // supports.forEach(function(datum){
 //     //     console.log(datum.date+'\t'+datum.value);
 //     // });
@@ -62,12 +62,13 @@ function processStocks(){
         return Promise.reject(error);
     }).then(function(values){
         var lastCandle = _candles[_candles.length-1];
-        var momentumResults = values[3][values[3].length-1];
+        // var momentumResults = values[3][values[3].length-1];
         logProcessedInfo({
             'id':stockPointer,
             'stock':stock,
             'date':lastCandle.date,
             'price':lastCandle.close,
+            'count':_candles.length,
             // 'squeeze_off_since':values[0],
             // 'ma_crossed_above_since':values[1],
             // 'ma_crossed_below_since':values[2],
@@ -92,6 +93,7 @@ function processStocks(){
             'stock':stock,
             'date':null,
             'price':null,
+            'count':null,
             // 'squeeze_off_since':null,
             // 'ma_crossed_above_since':null,
             // 'ma_crossed_below_since':null,

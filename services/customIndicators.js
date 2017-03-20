@@ -3,32 +3,28 @@ var indicators = require('./indicators');
 
 exports.supports = function(candles,window){
     return indicators.lowest(candles,'low',window).then(function(lowest){
-        try{
-            var lastSupport=null;
-            var _result = [];
-            var result = [];
-            var value;
-            for(var i=0;i<lowest.length;i++){
-                var low = candles.find(function(candle){return candle.date===lowest[i].date;}).low;
-                if(low<=lowest[i].value){
-                    lastSupport = low;
-                }
-                _result.push({date:lowest[i].date,value:lastSupport})
-            }   
-            for(var i=0;i<_result.length-1;i++){
-                if(!_result[i].value || !_result[i+1].value){
-                    value = null;
-                }else if(_result[i].value !== _result[i+1].value){
-                    value = null;
-                }else{
-                    value = _result[i].value;
-                }
-                result.push({date:_result[i].date,value:value});
+        var lastSupport=null;
+        var _result = [];
+        var result = [];
+        var value;
+        for(var i=0;i<lowest.length;i++){
+            var low = candles.find(function(candle){return candle.date===lowest[i].date;}).low;
+            if(low<=lowest[i].value){
+                lastSupport = low;
             }
-            return Promise.resolve(result);
-        }catch(e){
-            throw e;
+            _result.push({date:lowest[i].date,value:lastSupport});
         }
+        for(var i=0;i<_result.length-1;i++){
+            if(!_result[i].value || !_result[i+1].value){
+                value = null;
+            }else if(_result[i].value !== _result[i+1].value){
+                value = null;
+            }else{
+                value = _result[i].value;
+            }
+            result.push({date:_result[i].date,value:value});
+        }
+        return Promise.resolve(result);
     });
 };
 
@@ -83,6 +79,12 @@ exports.support1Since = function(candles){
 };
 
 exports.supportOverlapRatio = function(candles){
+    var valueScale = d3.scale.linear()
+        .domain([
+            d3.min(candles.map(function(candle){return candle.low;})),
+            d3.max(candles.map(function(candle){return candle.high;}))
+        ])
+        .range([100,400]);
     return Promise.all([
         exports.support1(candles),
         exports.support2(candles)
@@ -92,29 +94,40 @@ exports.supportOverlapRatio = function(candles){
         if(support1 === null || support2 === null){
             return Promise.resolve(null);
         }else{
+            support1 = valueScale(support1);
+            support2 = valueScale(support2);
             return Promise.resolve((Math.abs(+((support2-support1)/support2)*100).toFixed(2)));
         }
     });
 }
 
 exports.priceSupportRatio = function(candles){
+    var valueScale = d3.scale.linear()
+        .domain([
+            d3.min(candles.map(function(candle){return candle.low;})),
+            d3.max(candles.map(function(candle){return candle.high;}))
+        ])
+        .range([100,400]);
     return Promise.all([
         exports.support1(candles),
         exports.support2(candles)
     ]).then(function(values){
         var support1 = values[0];
         var support2 = values[1];
-        var price = candles[candles.length-1].close;
+        var price = valueScale(candles[candles.length-1].close);
         if(support2===null){
             if(support1===null){
                 return Promise.resolve(null);
             }else{
+                support1 = valueScale(support1);
                 return Promise.resolve((((price-support1)/support1)*100).toFixed(2));
             }
         }else{
+            support2 = valueScale(support2);
             if(support1===null){
                 return Promise.resolve((((price-support2)/support2)*100).toFixed(2));
             }else{
+                support1 = valueScale(support1);
                 var support = (support1>support2)?support1:support2;
                 return Promise.resolve((((price-support)/support)*100).toFixed(2));
             }
@@ -131,7 +144,6 @@ exports.combinedSupports = function(candles){
         var support2 = values[1];
         var results1 = [];
         var results2 = [];
-        var price = candles[candles.length-1].low;
         var lastLow = null;
         for(var i = 0; i<support1.length; i++){
             if(support1[i].value === null){
@@ -185,12 +197,19 @@ exports.combinedSupports = function(candles){
             }
         }
         for(var i=0;i<results2.length;i++){
-            var result1 = results1.find(function(result){ return result.date === results2[i].date; });
-            if(!result1){
-                console.log('error : '+candles[0].symbol);
-                continue;
-            } else if(result1.count < results2[i].count){
-                result1.count = results2[i].count;
+            var date2 = new Date(results2[i].date).getTime();
+            for(var j=0;j<results1.length;j++){
+                var date1 = new Date(results1[j].date).getTime();
+                if(date1>=date2){
+                    break;
+                }
+            }
+            if(date1===date2){
+                if(results1[j].count < results2[i].count){
+                    results1[j].count = results2[i].count;
+                }
+            }else{
+                results1.splice(j,0,results2[i]);
             }
         }
         return Promise.resolve(results1);
@@ -198,6 +217,12 @@ exports.combinedSupports = function(candles){
 };
 
 exports.previousSupportRatio = function(candles){
+    var valueScale = d3.scale.linear()
+        .domain([
+            d3.min(candles.map(function(candle){return candle.low;})),
+            d3.max(candles.map(function(candle){return candle.high;}))
+        ])
+        .range([100,400]);
     return Promise.all([
         exports.combinedSupports(candles),
         exports.support1(candles),
@@ -207,8 +232,8 @@ exports.previousSupportRatio = function(candles){
             return Promise.resolve(null);
         }else{
             var supports = values[0];
-            var support1 = supports[supports.length-1].value;
-            var support2 = supports[supports.length-2].value;
+            var support1 = valueScale(supports[supports.length-1].value);
+            var support2 = valueScale(supports[supports.length-2].value);
             return Promise.resolve((Math.abs(+((support2-support1)/support2)*100).toFixed(2)));   
         }
     });

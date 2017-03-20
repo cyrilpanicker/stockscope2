@@ -22,3 +22,5 @@ previous_support_ratio!=null previous_support_ratio<1 (support1_since=1 OR suppo
 ------------------------------------------------
 previous_support_ratio!=null (support1_since=1 OR support2_since=1)
 | sort -previous_support_ratio
+-------------------------------------------------
+support2_since!=null | eval diff=abs(bb_low2_since-support2_since) | sort diff

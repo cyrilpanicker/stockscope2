@@ -1,5 +1,10 @@
 [
   {
+    "name": "Kewal Kiran Clothing Ltd.",
+    "industry": "TEXTILES",
+    "symbol": "KKCL"
+  },
+  {
     "name": "3M India Ltd.",
     "industry": "SERVICES",
     "symbol": "3MINDIA"
@@ -38,10 +43,5 @@
     "name": "Pipavav Defence and Offshore Engineering Company Ltd.",
     "industry": "INDUSTRIAL MANUFACTURING",
     "symbol": "PIPAVAVDOC"
-  },
-  {
-    "name": "Kewal Kiran Clothing Ltd.",
-    "industry": "TEXTILES",
-    "symbol": "KKCL"
   }
 ]
