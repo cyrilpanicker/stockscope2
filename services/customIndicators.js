@@ -28,6 +28,33 @@ exports.supports = function(candles,window){
     });
 };
 
+exports.resistances = function(candles,window){
+    return indicators.highest(candles,'high',window).then(function(highest){
+        var lastResistance=null;
+        var _result = [];
+        var result = [];
+        var value;
+        for(var i=0;i<highest.length;i++){
+            var high = candles.find(function(candle){return candle.date===highest[i].date;}).high;
+            if(high>=highest[i].value){
+                lastResistance = high;
+            }
+            _result.push({date:highest[i].date,value:lastResistance});
+        }
+        for(var i=0;i<_result.length-1;i++){
+            if(!_result[i].value || !_result[i+1].value){
+                value = null;
+            }else if(_result[i].value !== _result[i+1].value){
+                value = null;
+            }else{
+                value = _result[i].value;
+            }
+            result.push({date:_result[i].date,value:value});
+        }
+        return Promise.resolve(result);
+    });
+};
+
 exports.support2 = function(candles){
     return exports.supports(candles,21).then(function(supports){
         return Promise.resolve(supports[supports.length-1].value);
@@ -241,7 +268,7 @@ exports.previousSupportRatio = function(candles){
 
 exports.bbw = function(candles){
     var results = [];
-    return indicators.bollingerBands(candles,14).then(function(values){
+    return indicators.bollingerBands(candles,21).then(function(values){
         for(var i=0;i<values.length;i++){
             results.push({
                 date:values[i].date,
@@ -273,7 +300,7 @@ exports.bbwLows = function(candles,window){
 };
 
 exports.bbwLow1Since = function(candles){
-    return exports.bbwLows(candles,21).then(function(bbwLows){
+    return exports.bbwLows(candles,34).then(function(bbwLows){
         var date = bbwLows[bbwLows.length-1].date;
         var counter = 0;
         for(var i=candles.length-1;i>=0;i--){

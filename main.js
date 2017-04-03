@@ -17,11 +17,11 @@ var currentDate = new Date();
 //----------------------------------------------------
 // var _candles = [];
 // quandlService.getCandles({stock:'BEML',endDate:new Date()}).then(function(candles){
-//     return customIndicators.supportOverlapRatio(candles);
+//     return customIndicators.resistances(candles,21);
 // },function(error){
 //     return Promise.reject(error);
 // }).then(function(supports){
-//     // console.log(supports);
+//     console.log(supports.slice(200));
 //     // supports.forEach(function(datum){
 //     //     console.log(datum.date+'\t'+datum.value);
 //     // });
