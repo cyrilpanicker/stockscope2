@@ -12,16 +12,17 @@ var stocksListFile = mode !== 'production' ? 'data/stocks-list.test.json' : 'dat
 var stocksList = [];
 var stockPointer = 0;
 var currentDate = new Date();
-// var currentDate = new Date(2017,0,17);
+// var currentDate = new Date(2017,4,24);
 
 //----------------------------------------------------
 // var _candles = [];
-// quandlService.getCandles({stock:'BEML',endDate:new Date()}).then(function(candles){
-//     return customIndicators.resistances(candles,21);
+// quandlService.getCandles({stock:'SUPREMEINF',endDate:new Date()}).then(function(candles){
+//     return customIndicators.trendDetails(candles,20,2);
 // },function(error){
 //     return Promise.reject(error);
 // }).then(function(supports){
-//     console.log(supports.slice(200));
+//     console.log(supports);
+//     // console.log(supports.slice(200));
 //     // supports.forEach(function(datum){
 //     //     console.log(datum.date+'\t'+datum.value);
 //     // });
@@ -56,7 +57,9 @@ function processStocks(){
             customIndicators.previousSupportRatio(candles),
             customIndicators.priceSupportRatio(candles),
             customIndicators.bbwLow1Since(candles),
-            customIndicators.bbwLow2Since(candles)
+            customIndicators.bbwLow2Since(candles),
+            customIndicators.lowToBblowRatio(candles,21),
+            customIndicators.trendDetails(candles,20,2)
         ]);
     },function(error){
         return Promise.reject(error);
@@ -85,6 +88,10 @@ function processStocks(){
             'price_support_ratio':values[4],
             'bb_low1_since':values[5],
             'bb_low2_since':values[6],
+            'low_to_bblow_ratio':values[7],
+            'is_uptrend':values[8].is_uptrend,
+            'trend_helper_price':values[8].trend_helper_price,
+            'trend_changed_since':values[8].trend_changed_since,
             'error':null
         });
     },function(error){
@@ -110,6 +117,10 @@ function processStocks(){
             'price_support_ratio':null,
             'bb_low1_since':null,
             'bb_low2_since':null,
+            'low_to_bblow_ratio':null,
+            'is_uptrend':null,
+            'trend_helper_price':null,
+            'trend_changed_since':null,
             'error':error
         });
     }).then(function(){

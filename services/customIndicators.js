@@ -1,5 +1,7 @@
 var d3 = require('d3');
 var indicators = require('./indicators');
+var helpers = require('./helpers');
+var nz = helpers.nz;
 
 exports.supports = function(candles,window){
     return indicators.lowest(candles,'low',window).then(function(lowest){
@@ -266,9 +268,9 @@ exports.previousSupportRatio = function(candles){
     });
 };
 
-exports.bbw = function(candles){
+exports.bbw = function(candles,period){
     var results = [];
-    return indicators.bollingerBands(candles,21).then(function(values){
+    return indicators.bollingerBands(candles,period).then(function(values){
         for(var i=0;i<values.length;i++){
             results.push({
                 date:values[i].date,
@@ -279,12 +281,12 @@ exports.bbw = function(candles){
     });
 }
 
-exports.bbwLows = function(candles,window){
+exports.bbwLows = function(candles,period,lowWindow){
     var results = [];
     var bbwValues = [];
-    return exports.bbw(candles).then(function(_bbwValues){
+    return exports.bbw(candles,period).then(function(_bbwValues){
         bbwValues = _bbwValues;
-        return indicators.lowest(_bbwValues,'value',window);
+        return indicators.lowest(_bbwValues,'value',lowWindow);
     }).then(function(bbwLowestValues){
         for(var i=0;i<bbwLowestValues.length;i++){
             var bbwValue = bbwValues.find(function(bbwValue){return bbwValue.date===bbwLowestValues[i].date;}).value;
@@ -300,7 +302,7 @@ exports.bbwLows = function(candles,window){
 };
 
 exports.bbwLow1Since = function(candles){
-    return exports.bbwLows(candles,34).then(function(bbwLows){
+    return exports.bbwLows(candles,21,34).then(function(bbwLows){
         var date = bbwLows[bbwLows.length-1].date;
         var counter = 0;
         for(var i=candles.length-1;i>=0;i--){
@@ -315,7 +317,7 @@ exports.bbwLow1Since = function(candles){
 };
 
 exports.bbwLow2Since = function(candles){
-    return exports.bbwLows(candles,55).then(function(bbwLows){
+    return exports.bbwLows(candles,21,55).then(function(bbwLows){
         var date = bbwLows[bbwLows.length-1].date;
         var counter = 0;
         for(var i=candles.length-1;i>=0;i--){
@@ -327,6 +329,20 @@ exports.bbwLow2Since = function(candles){
         }
         return counter;
     }); 
+};
+
+exports.lowToBblowRatio = function(candles,period){
+    var valueScale = d3.scale.linear()
+        .domain([
+            d3.min(candles.map(function(candle){return candle.low;})),
+            d3.max(candles.map(function(candle){return candle.high;}))
+        ])
+        .range([100,400]);
+    return indicators.bollingerBands(candles,period).then(function(values){
+        var lowerBb = valueScale(values[values.length-1].lower);
+        var low = valueScale(candles[candles.length-1].low);
+        return Promise.resolve(((low-lowerBb)/lowerBb*100).toFixed(2));
+    });
 };
 
 exports.squeeze = function(candles){
@@ -638,7 +654,47 @@ exports.slope = function(data){
         });
     }
     return results;
-}
+};
+
+exports.trendDetails = function(candles,period,multiplier){
+    var close, max1, min1, is_uptrend_prev, vstop_prev, stop, vstop1,
+        is_uptrend, is_trend_changed, max_, min_, vstop = null;
+    var result = [];
+    return indicators.atr(candles,period).then(function(atrResult){
+        candles = candles.slice(-atrResult.length);
+        for(var i=0; i<candles.length; i++){
+            close = candles[i].close;
+            atr = atrResult[i].value;
+            max1 = Math.max(nz(max_),close);
+            min1 = Math.min(nz(min_),close);
+            is_uptrend_prev = nz(is_uptrend,true);
+            vstop_prev = nz(vstop);
+            stop = is_uptrend_prev ? max1 - multiplier * atr : min1 + multiplier * atr;
+            vstop1 = is_uptrend_prev ? Math.max(vstop_prev,stop) : Math.min(vstop_prev, stop);
+            is_uptrend = (close-vstop1)>=0;
+            is_trend_changed = is_uptrend !== is_uptrend_prev;
+            max_ = is_trend_changed ? close : max1;
+            min_ = is_trend_changed ? close : min1;
+            vstop = is_trend_changed ? (is_uptrend ? max_ - multiplier * atr : min_ + multiplier * atr) : vstop1;
+            result.push({
+                date:candles[i].date,
+                is_trend_changed:is_trend_changed,
+                is_uptrend:is_uptrend,
+                trend_helper_price:parseFloat(vstop.toFixed(2))
+            });
+        }
+        var counter = 0;
+        for(var i=result.length-1; i>=0 && result[i].is_trend_changed===false; i--){
+            counter++;
+        }
+        return Promise.resolve({
+            date:result[result.length-1].date,
+            is_uptrend:result[result.length-1].is_uptrend,
+            trend_helper_price:result[result.length-1].trend_helper_price,
+            trend_changed_since:counter
+        });
+    },function(error){reject(error);});
+};
 
 function getPoint(datum,dateScale,valueScale) {
     var point = {};

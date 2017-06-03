@@ -17,3 +17,15 @@ exports.delay = function(time){
         setTimeout(resolve,time);
     });
 };
+
+exports.nz = function(value,defaultValue){
+    if(value === null){
+        if(!defaultValue){
+            return 0;
+        }else{
+            return defaultValue;
+        }
+    }else{
+        return value;
+    }
+};

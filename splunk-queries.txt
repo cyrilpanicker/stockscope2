@@ -1,18 +1,17 @@
-support_overlap_ratio<1 (support1_since=1 OR support2_since=1)
-| where support1_since != support2_since
-| sort support_overlap_ratio
+support1_since=1 OR support2_since=1 | where support1_since != support2_since | sort support_overlap_ratio
 ----------------------------------------------
-previous_support_ratio!=null previous_support_ratio<1 (support1_since=1 OR support2_since=1)
-| sort previous_support_ratio
+support1_since=1 OR support2_since=1 | sort previous_support_ratio
 ----------------------------------------------
-previous_support_ratio!=null (support1_since=1 OR support2_since=1)
-| sort -previous_support_ratio
+support1_since=1 OR support2_since=1 | sort -previous_support_ratio
 ----------------------------------------------
 support2_since=1 OR bb_low2_since=0 | eval diff=abs(bb_low2_since-support2_since) | sort diff
 ----------------------------------------------
-
-
-
+support1_since=1 OR support2_since=1 | eval abs_low_to_bblow_ratio = abs(low_to_bblow_ratio) | sort abs_low_to_bblow_ratio
+----------------------------------------------
+* | eval abs_low_to_bblow_ratio = abs(low_to_bblow_ratio) | sort abs_low_to_bblow_ratio
+----------------------------------------------
+low_to_bblow_ratio<0 | sort low_to_bblow_ratio
+----------------------------------------------
 
 
 ----------------------------------------------

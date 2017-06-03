@@ -70,6 +70,20 @@ exports.tr = function(candles){
     });
 };
 
+exports.atr = function(candles,period){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'ATR',
+            high:candles.map(function(datum){return datum.high;}),
+            low:candles.map(function(datum){return datum.low;}),
+            close:candles.map(function(datum){return datum.close;}),
+            startIdx:0,
+            endIdx:candles.length-1,
+            optInTimePeriod:period
+        },responseHandler.bind(null,candles,resolve,reject));
+    });
+};
+
 exports.adx = function(candles,period){
     return new Promise(function(resolve,reject){
         talib.execute({
