@@ -656,6 +656,30 @@ exports.slope = function(data){
     return results;
 };
 
+exports.easeOfMovement = function(candles,divisor,length){
+    var eomResult = [];
+    for(var i=1;i<candles.length;i++){
+        var currentAverage = (candles[i].high + candles[i].low)/2;
+        var previousAverage = (candles[i-1].high + candles[i-1].low)/2;
+        eomResult.push({
+            date:candles[i].date,
+            value:divisor * (currentAverage - previousAverage) * (candles[i].high - candles[i].low) / candles[i].volume
+        });
+    }
+    return indicators.sma(eomResult,'value',length);
+};
+
+exports.change = function(data){
+    var result = [];
+    for(var i=1;i<data.length;i++){
+        result.push({
+            date:data[i].date,
+            value:data[i].value-data[i-1].value
+        });
+    }
+    return result;
+};
+
 exports.trendDetails = function(candles,period,multiplier){
     var close, max1, min1, is_uptrend_prev, vstop_prev, stop, vstop1,
         is_uptrend, is_trend_changed, max_, min_, vstop = null;

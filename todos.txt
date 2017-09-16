@@ -1,3 +1,19 @@
+- vstop - %change in trend helper price
+
+
+======
+729    CDLLADDERBOTTOM  
+613    ADX  
+555    CDLSTALLEDPATTERN  
+534    MFI  
+525    CDLUPSIDEGAP2CROWS  
+518    CDLMORNINGDOJISTAR  
+518    ULTOSC  
+517    AVGPRICE  
+513    CDL3STARSINSOUTH  
+509    ATR
+======
+
 x momentum indicator
 - slope of curve
 - diff between high and bollinger bands

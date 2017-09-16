@@ -1,6 +1,76 @@
 var talib = require('talib');
 var d3 = require('d3');
 
+exports.macd = function(candles,property,signalPeriod,fastPeriod,slowPeriod){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'MACD',
+            inReal:candles.map(function(datum){return datum[property];}),
+            startIdx:0,
+            endIdx:candles.length-1,
+            optInFastPeriod:fastPeriod,
+            optInSlowPeriod:slowPeriod,
+            optInSignalPeriod:signalPeriod
+        },function(response){
+            if(!response.result){
+                reject('error');
+            } else {
+                var result = [];
+                var _data = candles.slice(response.begIndex);
+                for(var i = 0; i<_data.length; i++){
+                    result.push({
+                        date:_data[i].date,
+                        macd:response.result.outMACD[i],
+                        macdSignal:response.result.outMACDSignal[i],
+                        macdHistogram:response.result.outMACDHist[i]
+                    });
+                }
+                resolve(result);
+            }
+        });
+    });
+}
+
+exports.ema = function(data,property,period){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'EMA',
+            inReal:data.map(function(datum){return datum[property];}),
+            startIdx:0,
+            endIdx:data.length-1,
+            optInTimePeriod:period
+        },responseHandler.bind(null,data,resolve,reject));
+    });
+};
+
+exports.diMinus = function(candles,period){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'MINUS_DI',
+            high:candles.map(function(datum){return datum.high;}),
+            low:candles.map(function(datum){return datum.low;}),
+            close:candles.map(function(datum){return datum.close;}),
+            startIdx:0,
+            endIdx:candles.length-1,
+            optInTimePeriod:period
+        },responseHandler.bind(null,candles,resolve,reject));
+    });
+};
+
+exports.diPlus = function(candles,period){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'PLUS_DI',
+            high:candles.map(function(datum){return datum.high;}),
+            low:candles.map(function(datum){return datum.low;}),
+            close:candles.map(function(datum){return datum.close;}),
+            startIdx:0,
+            endIdx:candles.length-1,
+            optInTimePeriod:period
+        },responseHandler.bind(null,candles,resolve,reject));
+    });
+};
+
 exports.sma = function(data,property,period){
     return new Promise(function(resolve,reject){
         talib.execute({
@@ -80,6 +150,20 @@ exports.atr = function(candles,period){
             startIdx:0,
             endIdx:candles.length-1,
             optInTimePeriod:period
+        },responseHandler.bind(null,candles,resolve,reject));
+    });
+};
+
+exports.sar = function(candles){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'SAR',
+            high:candles.map(function(datum){return datum.high;}),
+            low:candles.map(function(datum){return datum.low;}),
+            startIdx:0,
+            endIdx:candles.length-1,
+            optInAcceleration:0.02,
+            optInMaximum:0.2
         },responseHandler.bind(null,candles,resolve,reject));
     });
 };
