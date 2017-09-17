@@ -400,8 +400,8 @@ exports.abandonedBaby = function(candles){
 //     });    
 // };
 
-function responseHandler(candles,resolve,reject,response){
-    if(!response.result){
+function responseHandler(candles,resolve,reject,error,response){
+    if(error || !response.result){
         reject('error');
     } else {
         var result = [];

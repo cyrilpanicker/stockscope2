@@ -11,8 +11,8 @@ exports.macd = function(candles,property,signalPeriod,fastPeriod,slowPeriod){
             optInFastPeriod:fastPeriod,
             optInSlowPeriod:slowPeriod,
             optInSignalPeriod:signalPeriod
-        },function(response){
-            if(!response.result){
+        },function(error,response){
+            if(error || !response.result){
                 reject('error');
             } else {
                 var result = [];
@@ -231,8 +231,8 @@ exports.avg = function(data,properties){
     return result;
 }
 
-function responseHandler(data,resolve,reject,response){
-    if(!response.result){
+function responseHandler(data,resolve,reject,error,response){
+    if(error || !response.result){
         reject('error');
     } else {
         var result = [];
