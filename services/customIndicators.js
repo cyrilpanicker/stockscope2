@@ -130,6 +130,58 @@ exports.supportOverlapRatio = function(candles){
     });
 }
 
+exports.emaHelper = function(candles,period){
+    return indicators.ema(candles,'close',period).then(function(emaValues){
+
+        var ema = emaValues[emaValues.length-1].value;
+        var open = candles[candles.length-1].open;
+        var high = candles[candles.length-1].high;
+        var low = candles[candles.length-1].low;
+        var close = candles[candles.length-1].close;
+        var ratio = null;
+
+        var valueScale = d3.scale.linear().domain([
+            Math.min(
+                d3.min(candles.slice(-180).map(candle => candle.low)),
+                d3.min(emaValues.slice(-180).map(emaValue => emaValue.value))
+            ),
+            Math.max(
+                d3.max(candles.slice(-180).map(candle => candle.high)),
+                d3.max(emaValues.slice(-180).map(emaValue => emaValue.value))
+            )
+        ]).range([1,100]);
+
+        var scaledEma = valueScale(ema);
+        var scaledOpen = valueScale(open);
+        var scaledHigh = valueScale(high);
+        var scaledLow = valueScale(low);
+        var scaledClose = valueScale(close);
+
+        // console.log(scaledEma,scaledOpen,scaledHigh,scaledLow,scaledClose);
+
+        var openDiff = Math.abs(scaledOpen-scaledEma);
+        var highDiff = Math.abs(scaledHigh-scaledEma);
+        var lowDiff = Math.abs(scaledLow-scaledEma);
+        var closeDiff = Math.abs(scaledClose-scaledEma);
+        // console.log(openDiff,highDiff,lowDiff,closeDiff);
+
+        var min = Math.min(highDiff,lowDiff,openDiff,closeDiff);
+        if(highDiff === min){
+            ratio = ((scaledHigh-scaledEma)).toFixed(2);
+        }else if(lowDiff === min){
+            ratio = ((scaledLow-scaledEma)).toFixed(2);
+        }else if(openDiff === min ){
+            ratio = ((scaledOpen-scaledEma)).toFixed(2);
+        }else{
+            ratio = ((scaledClose-scaledEma)).toFixed(2);
+        }
+        return {
+            value:ema.toFixed(2),
+            ratio:ratio
+        };
+    });
+}
+
 exports.priceSupportRatio = function(candles){
     var valueScale = d3.scale.linear()
         .domain([

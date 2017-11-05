@@ -13,13 +13,24 @@ exports.getLatestCandleStickPattern = function(candles){
         exports.abandonedBaby(candles),
         exports.advanceBlock(candles),
         exports.beltHold(candles),
-
+        exports.breakAway(candles),
+        exports.closingMarubozu(candles),
+        exports.concealingBabySwallow(candles),
+        exports.counterAttack(candles),
         exports.darkCloudCover(candles),
+        exports.dojiStar(candles),
+        exports.dragonFlyDoji(candles),
+        exports.engulfing(candles),
+        exports.eveningDojiStar(candles),
+        exports.eveningStar(candles),
+        exports.gapSideWhite(candles),
+        exports.graveStoneDoji(candles),
+
         exports.harami(candles),
 
         exports.piercing(candles),
 
-        exports.engulfing(candles)
+        exports.tasukiGap(candles)
     ]).then(function(results){
         var date = null;
         var daysSince = 0;
@@ -212,6 +223,62 @@ exports.beltHold = function(candles){
     });    
 };
 
+exports.breakAway = function(candles){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'CDLBREAKAWAY',
+			open:candles.map(function(candle){return candle.open;}),
+			high:candles.map(function(candle){return candle.high;}),
+			low:candles.map(function(candle){return candle.low;}),
+			close:candles.map(function(candle){return candle.close;}),
+            startIdx:0,
+            endIdx:candles.length-1,
+        },responseHandler.bind(null,candles,resolve,reject));
+    });    
+};
+
+exports.closingMarubozu = function(candles){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'CDLCLOSINGMARUBOZU',
+			open:candles.map(function(candle){return candle.open;}),
+			high:candles.map(function(candle){return candle.high;}),
+			low:candles.map(function(candle){return candle.low;}),
+			close:candles.map(function(candle){return candle.close;}),
+            startIdx:0,
+            endIdx:candles.length-1,
+        },responseHandler.bind(null,candles,resolve,reject));
+    });    
+};
+
+exports.concealingBabySwallow = function(candles){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'CDLCONCEALBABYSWALL',
+			open:candles.map(function(candle){return candle.open;}),
+			high:candles.map(function(candle){return candle.high;}),
+			low:candles.map(function(candle){return candle.low;}),
+			close:candles.map(function(candle){return candle.close;}),
+            startIdx:0,
+            endIdx:candles.length-1,
+        },responseHandler.bind(null,candles,resolve,reject));
+    });    
+};
+
+exports.counterAttack = function(candles){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'CDLCOUNTERATTACK',
+			open:candles.map(function(candle){return candle.open;}),
+			high:candles.map(function(candle){return candle.high;}),
+			low:candles.map(function(candle){return candle.low;}),
+			close:candles.map(function(candle){return candle.close;}),
+            startIdx:0,
+            endIdx:candles.length-1,
+        },responseHandler.bind(null,candles,resolve,reject));
+    });    
+};
+
 exports.darkCloudCover = function(candles){
     return new Promise(function(resolve,reject){
         talib.execute({
@@ -223,6 +290,106 @@ exports.darkCloudCover = function(candles){
             startIdx:0,
             endIdx:candles.length-1,
             optInPenetration:null
+        },responseHandler.bind(null,candles,resolve,reject));
+    });    
+};
+
+exports.dojiStar = function(candles){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'CDLDOJISTAR',
+			open:candles.map(function(candle){return candle.open;}),
+			high:candles.map(function(candle){return candle.high;}),
+			low:candles.map(function(candle){return candle.low;}),
+			close:candles.map(function(candle){return candle.close;}),
+            startIdx:0,
+            endIdx:candles.length-1
+        },responseHandler.bind(null,candles,resolve,reject));
+    });    
+};
+
+exports.dragonFlyDoji = function(candles){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'CDLDRAGONFLYDOJI',
+			open:candles.map(function(candle){return candle.open;}),
+			high:candles.map(function(candle){return candle.high;}),
+			low:candles.map(function(candle){return candle.low;}),
+			close:candles.map(function(candle){return candle.close;}),
+            startIdx:0,
+            endIdx:candles.length-1
+        },responseHandler.bind(null,candles,resolve,reject));
+    });    
+};
+
+exports.engulfing = function(candles){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'CDLENGULFING',
+			open:candles.map(function(candle){return candle.open;}),
+			high:candles.map(function(candle){return candle.high;}),
+			low:candles.map(function(candle){return candle.low;}),
+			close:candles.map(function(candle){return candle.close;}),
+            startIdx:0,
+            endIdx:candles.length-1
+        },responseHandler.bind(null,candles,resolve,reject));
+    });    
+};
+
+exports.eveningDojiStar = function(candles){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'CDLEVENINGDOJISTAR',
+			open:candles.map(function(candle){return candle.open;}),
+			high:candles.map(function(candle){return candle.high;}),
+			low:candles.map(function(candle){return candle.low;}),
+			close:candles.map(function(candle){return candle.close;}),
+            startIdx:0,
+            endIdx:candles.length,
+            optInPenetration:null
+        },responseHandler.bind(null,candles,resolve,reject));
+    });    
+};
+
+exports.eveningStar = function(candles){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'CDLEVENINGSTAR',
+			open:candles.map(function(candle){return candle.open;}),
+			high:candles.map(function(candle){return candle.high;}),
+			low:candles.map(function(candle){return candle.low;}),
+			close:candles.map(function(candle){return candle.close;}),
+            startIdx:0,
+            endIdx:candles.length,
+            optInPenetration:null
+        },responseHandler.bind(null,candles,resolve,reject));
+    });    
+};
+
+exports.gapSideWhite = function(candles){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'CDLGAPSIDESIDEWHITE',
+			open:candles.map(function(candle){return candle.open;}),
+			high:candles.map(function(candle){return candle.high;}),
+			low:candles.map(function(candle){return candle.low;}),
+			close:candles.map(function(candle){return candle.close;}),
+            startIdx:0,
+            endIdx:candles.length
+        },responseHandler.bind(null,candles,resolve,reject));
+    });    
+};
+
+exports.graveStoneDoji = function(candles){
+    return new Promise(function(resolve,reject){
+        talib.execute({
+            name:'CDLGRAVESTONEDOJI',
+			open:candles.map(function(candle){return candle.open;}),
+			high:candles.map(function(candle){return candle.high;}),
+			low:candles.map(function(candle){return candle.low;}),
+			close:candles.map(function(candle){return candle.close;}),
+            startIdx:0,
+            endIdx:candles.length
         },responseHandler.bind(null,candles,resolve,reject));
     });    
 };
@@ -255,10 +422,10 @@ exports.piercing = function(candles){
     });    
 };
 
-exports.engulfing = function(candles){
+exports.tasukiGap = function(candles){
     return new Promise(function(resolve,reject){
         talib.execute({
-            name:'CDLENGULFING',
+            name:'CDLTASUKIGAP',
 			open:candles.map(function(candle){return candle.open;}),
 			high:candles.map(function(candle){return candle.high;}),
 			low:candles.map(function(candle){return candle.low;}),
@@ -268,137 +435,6 @@ exports.engulfing = function(candles){
         },responseHandler.bind(null,candles,resolve,reject));
     });    
 };
-
-exports.upSideGapTwoCrows = function(candles){
-    return new Promise(function(resolve,reject){
-        talib.execute({
-            name:'CDLUPSIDEGAP2CROWS',
-			open:candles.map(function(candle){return candle.open;}),
-			high:candles.map(function(candle){return candle.high;}),
-			low:candles.map(function(candle){return candle.low;}),
-			close:candles.map(function(candle){return candle.close;}),
-            startIdx:0,
-            endIdx:candles.length-1,
-            optInPenetration:null
-        },responseHandler.bind(null,candles,resolve,reject));
-    });    
-};
-
-exports.breakAway = function(candles){
-    return new Promise(function(resolve,reject){
-        talib.execute({
-            name:'CDLBREAKAWAY',
-			open:candles.map(function(candle){return candle.open;}),
-			high:candles.map(function(candle){return candle.high;}),
-			low:candles.map(function(candle){return candle.low;}),
-			close:candles.map(function(candle){return candle.close;}),
-            startIdx:0,
-            endIdx:candles.length-1,
-            optInPenetration:null
-        },responseHandler.bind(null,candles,resolve,reject));
-    });    
-};
-
-
-exports.morningStar = function(candles){
-    return new Promise(function(resolve,reject){
-        talib.execute({
-            name:'CDLMORNINGSTAR',
-			open:candles.map(function(candle){return candle.open;}),
-			high:candles.map(function(candle){return candle.high;}),
-			low:candles.map(function(candle){return candle.low;}),
-			close:candles.map(function(candle){return candle.close;}),
-            startIdx:0,
-            endIdx:candles.length-1,
-            optInPenetration:null
-        },responseHandler.bind(null,candles,resolve,reject));
-    });    
-};
-
-exports.longLineCandle = function(candles){
-    return new Promise(function(resolve,reject){
-        talib.execute({
-            name:'CDLLONGLINE',
-			open:candles.map(function(candle){return candle.open;}),
-			high:candles.map(function(candle){return candle.high;}),
-			low:candles.map(function(candle){return candle.low;}),
-			close:candles.map(function(candle){return candle.close;}),
-            startIdx:0,
-            endIdx:candles.length-1
-        },responseHandler.bind(null,candles,resolve,reject));
-    });    
-};
-
-exports.hangingMan = function(candles){
-    return new Promise(function(resolve,reject){
-        talib.execute({
-            name:'CDLHANGINGMAN',
-			open:candles.map(function(candle){return candle.open;}),
-			high:candles.map(function(candle){return candle.high;}),
-			low:candles.map(function(candle){return candle.low;}),
-			close:candles.map(function(candle){return candle.close;}),
-            startIdx:0,
-            endIdx:candles.length-1
-        },responseHandler.bind(null,candles,resolve,reject));
-    });    
-};
-
-exports.hammer = function(candles){
-    return new Promise(function(resolve,reject){
-        talib.execute({
-            name:'CDLHAMMER',
-			open:candles.map(function(candle){return candle.open;}),
-			high:candles.map(function(candle){return candle.high;}),
-			low:candles.map(function(candle){return candle.low;}),
-			close:candles.map(function(candle){return candle.close;}),
-            startIdx:0,
-            endIdx:candles.length-1
-        },responseHandler.bind(null,candles,resolve,reject));
-    });    
-};
-
-exports.doji = function(candles){
-    return new Promise(function(resolve,reject){
-        talib.execute({
-            name:'CDLDOJI',
-			open:candles.map(function(candle){return candle.open;}),
-			high:candles.map(function(candle){return candle.high;}),
-			low:candles.map(function(candle){return candle.low;}),
-			close:candles.map(function(candle){return candle.close;}),
-            startIdx:0,
-            endIdx:candles.length-1
-        },responseHandler.bind(null,candles,resolve,reject));
-    });    
-};
-
-exports.abandonedBaby = function(candles){
-    return new Promise(function(resolve,reject){
-        talib.execute({
-            name:'CDLABANDONEDBABY',
-			open:candles.map(function(candle){return candle.open;}),
-			high:candles.map(function(candle){return candle.high;}),
-			low:candles.map(function(candle){return candle.low;}),
-			close:candles.map(function(candle){return candle.close;}),
-            startIdx:0,
-            endIdx:candles.length-1,
-            optInPenetration:null
-        },responseHandler.bind(null,candles,resolve,reject));
-    });    
-};
-
-// exports.tasukiGap = function(candles){
-//     return new Promise(function(resolve,reject){
-//         talib.execute({
-//             name:'CDLTASUKIGAP',
-// 			open:candles.map(function(candle){return candle.open;}),
-// 			high:candles.map(function(candle){return candle.high;}),
-// 			low:candles.map(function(candle){return candle.low;}),
-// 			close:candles.map(function(candle){return candle.close;}),
-//             startIdx:0,
-//             endIdx:candles.length-1
-//         },responseHandler.bind(null,candles,resolve,reject));
-//     });    
-// };
 
 function responseHandler(candles,resolve,reject,error,response){
     if(error || !response.result){

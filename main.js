@@ -8,21 +8,28 @@ var processLogger = loggingService.processLogger;
 var functionalLogger = loggingService.functionalLogger;
 
 var mode = process.env.NODE_ENV;
-var stocksListFile = mode !== 'production' ? 'data/stocks-list.test.json' : 'data/stocks-list.json' ;
+var stocksListFile = mode !== 'production' ? 'data/stocks-list.test.json' : 'data/stockslist-new.json' ;
 var stocksList = [];
 var stockPointer = 0;
 var currentDate = new Date();
-// var currentDate = new Date(2017,08,05);
+// var currentDate = new Date(2017,08,08);
 
 //----------------------------------------------------
 // var _candles = [];
-// quandlService.getCandles({stock:'JKCEMENT',endDate:new Date()}).then(function(candles){
-//     return candleStickPatterns.darkCloudCover(candles);
+// quandlService.getCandles({stock:'ADFFOODS',endDate:new Date(2017,08,10)}).then(function(candles){
+//     return customIndicators.ema50PriceRatio(candles);
 // },function(error){
 //     return Promise.reject(error);
 // }).then(function(supports){
-//     // console.log(supports);
-//     console.log(supports.slice(200));
+//     console.log(supports);
+//     // console.log(supports.slice(-10));
+//     // console.log('----------');
+//     // var filtered = supports.filter(support => support.value!=0);
+//     // if(filtered.length){
+//     //     console.log(filtered[filtered.length-1]);
+//     // }else{
+//     //     console.log('none');
+//     // }
 //     // supports.forEach(function(datum){
 //     //     console.log(datum.date+'\t'+datum.value);
 //     // });
@@ -40,7 +47,7 @@ helpers.readFile(stocksListFile).then(function(data){
 },functionalLogger.error.bind(functionalLogger));
 
 function processStocks(){
-    var stock = stocksList[stockPointer].symbol;
+    var stock = stocksList[stockPointer].SYMBOL;
     var _candles = [];
     quandlService.getCandles({stock:stock,endDate:currentDate}).then(function(candles){
         _candles = candles;
@@ -64,7 +71,9 @@ function processStocks(){
             indicators.adx(candles,14),
             indicators.sar(candles),
             indicators.macd(candles,'close',9,13,26),
-            candleStickPatterns.getLatestCandleStickPattern(candles)
+            candleStickPatterns.getLatestCandleStickPattern(candles),
+            customIndicators.emaHelper(candles,50),
+            customIndicators.emaHelper(candles,200)
             // customIndicators.bbwLow1Since(candles),
             // customIndicators.bbwLow2Since(candles),
             // customIndicators.lowToBblowRatio(candles,21),
@@ -134,6 +143,10 @@ function processStocks(){
             'cdl_days_since':values[13].daysSince,
             'cdl_type0':values[13].testedType,
             'cdl_type1':values[13].theoreticalType,
+            'ema50':values[14].value,
+            'ema50_price_ratio':values[14].ratio,
+            'ema200':values[15].value,
+            'ema200_price_ratio':values[15].ratio,
             // 'bb_low1_since':values[5],
             // 'bb_low2_since':values[6],
             // 'low_to_bblow_ratio':values[7],
@@ -183,6 +196,10 @@ function processStocks(){
             'cdl_days_since':null,
             'cdl_type0':null,
             'cdl_type1':null,
+            'ema50':null,
+            'ema50_price_ratio':null,
+            'ema200':null,
+            'ema200_price_ratio':null,
             // 'bb_low1_since':null,
             // 'bb_low2_since':null,
             // 'low_to_bblow_ratio':null,
@@ -194,7 +211,7 @@ function processStocks(){
     }).then(function(){
         stockPointer++;
         if(stockPointer < stocksList.length){
-            return helpers.delay(5000);
+            return helpers.delay(1000);
         }else{
             return helpers.delay(0);
         }

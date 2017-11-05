@@ -130,6 +130,58 @@ module.exports = [
         }
     },
     {
+        name:'BREAKAWAY',
+        bullish:{
+            strength:104-45,
+            theoreticalType:'BULLISH_REVERSAL',
+            testedType:'BULLISH_REVERSAL'
+        },
+        bearish:{
+            strength:104-11,
+            theoreticalType:'BEARISH_REVERSAL',
+            testedType:'BEARISH_REVERSAL'
+        }
+    },
+    {
+        name:'CLOSING_MARUBOZU',
+        bullish:{
+            strength:104-70,
+            theoreticalType:'CONTINUATION',
+            testedType:'CONTINUATION'
+        },
+        bearish:{
+            strength:104-43,
+            theoreticalType:'CONTINUATION',
+            testedType:'CONTINUATION'
+        }
+    },
+    {
+        name:'CONCEALING_BABY_SWALLOW',
+        bullish:{
+            strength:104-101,
+            theoreticalType:'BULLISH_REVERSAL',
+            testedType:'BEARISH_CONTINUATION'
+        },
+        bearish:{
+            strength:null,
+            theoreticalType:null,
+            testedType:null
+        }
+    },
+    {
+        name:'COUNTER_ATTACK',
+        bullish:{
+            strength:null,
+            theoreticalType:'BULLISH_REVERSAL',
+            testedType:'BULLISH_REVERSAL'
+        },
+        bearish:{
+            strength:null,
+            theoreticalType:'BEARISH_REVERSAL',
+            testedType:'BEARISH_REVERSAL'
+        }
+    },
+    {
         name:'DARK_CLOUD_COVER',
         bullish:{
             strength:null,
@@ -140,6 +192,97 @@ module.exports = [
             strength:104-22,
             theoreticalType:'BEARISH_REVERSAL',
             testedType:'BEARISH_REVERSAL'
+        }
+    },
+    {
+        name:'DOJI_STAR',
+        bullish:{
+            strength:104-49,
+            theoreticalType:'BULLISH_REVERSAL',
+            testedType:'BEARISH_CONTINUATION'
+        },
+        bearish:{
+            strength:104-51,
+            theoreticalType:'BEARISH_REVERSAL',
+            testedType:'BULLISH_CONTINUATION'
+        }
+    },
+    {
+        name:'DRAGONFLY_DOJI',
+        bullish:{
+            strength:104-98,
+            theoreticalType:'BULLISH_REVERSAL',
+            testedType:'REVERSAL'
+        },
+        bearish:{
+            strength:null,
+            theoreticalType:null,
+            testedType:null
+        }
+    },
+    {
+        name:'ENGULFING',
+        bullish:{
+            strength:104-84,
+            theoreticalType:'BULLISH_REVERSAL',
+            testedType:'BULLISH_REVERSAL'
+        },
+        bearish:{
+            strength:104-91,
+            theoreticalType:'BEARISH_REVERSAL',
+            testedType:'BEARISH_REVERSAL'
+        }
+    },
+    {
+        name:'EVENING_DOJI_STAR',
+        bullish:{
+            strength:null,
+            theoreticalType:null,
+            testedType:null
+        },
+        bearish:{
+            strength:104-30,
+            theoreticalType:'BEARISH_REVERSAL',
+            testedType:'BEARISH_REVERSAL'
+        }
+    },
+    {
+        name:'EVENING_STAR',
+        bullish:{
+            strength:null,
+            theoreticalType:null,
+            testedType:null
+        },
+        bearish:{
+            strength:104-4,
+            theoreticalType:'BEARISH_REVERSAL',
+            testedType:'BEARISH_REVERSAL'
+        }
+    },
+    {
+        name:'SIDE_BY_SIDE_WHITE_LINES',
+        bullish:{
+            strength:104-46,
+            theoreticalType:'BULLISH_CONTINUATION',
+            testedType:'BULLISH_CONTINUATION'
+        },
+        bearish:{
+            strength:104-29,
+            theoreticalType:'BEARISH_CONTINUATION',
+            testedType:'BEARISH_CONTINUATION'
+        }
+    },
+    {
+        name:'GRAVESTONE_DOJI',
+        bullish:{
+            strength:104-77,
+            theoreticalType:'BEARISH_REVERSAL',
+            testedType:'BEARISH_REVERSAL'
+        },
+        bearish:{
+            strength:null,
+            theoreticalType:null,
+            testedType:null
         }
     },
     {
@@ -169,16 +312,16 @@ module.exports = [
         }
     },
     {
-        name:'ENGULFING',
+        name:'TASUKI_GAP',
         bullish:{
-            strength:104-84,
-            theoreticalType:'BULLISH_REVERSAL',
-            testedType:'BULLISH_REVERSAL'
+            strength:104-5,
+            theoreticalType:'BULLISH_CONTINUATION',
+            testedType:'BULLISH_CONTINUATION'
         },
         bearish:{
-            strength:104-91,
-            theoreticalType:'BEARISH_REVERSAL',
-            testedType:'BEARISH_REVERSAL'
+            strength:104-23,
+            theoreticalType:'BEARISH_CONTINUATION',
+            testedType:'BULLISH_REVERSAL'
         }
     }
 ];

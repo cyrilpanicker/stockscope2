@@ -1,6 +1,14 @@
-long_setup1_strength=50 AND macd>-5 AND (support1_since<=2 OR support2_since<=2) | sort macd
-long_setup1_strength=50  AND macd>0 | sort -macd
-----------------------------------------------
+error=null macd>=5 adx>=20 adx<=30 | eval abs_ema200_price_ratio=abs(ema200_price_ratio) | where close>=ema3 | sort abs_ema200_price_ratio
+error=null long_setup1_strength>=40 macd>=5 adx>=20 adx<=45 | where close>=ema3 | sort -adx
+------------------------
+
+error=null long_setup1_strength=50 macd>=5 macd<=20 | where ema50>ema200 | eval abs_ema200_price_ratio = abs(ema200_price_ratio) | sort abs_ema200_price_ratio
+error=null long_setup1_strength=50 macd>=5 macd<=20| eval abs_ema50_price_ratio = abs(ema50_price_ratio) | sort abs_ema50_price_ratio
+error=null macd>=5 | eval abs_ema200_price_ratio = abs(ema200_price_ratio) | sort abs_ema200_price_ratio
+error=null short_setup1_strength=50 | eval abs_ema50_price_ratio = abs(ema50_price_ratio) | sort abs_ema50_price_ratio
+-----------------------
+
+
 
 
 

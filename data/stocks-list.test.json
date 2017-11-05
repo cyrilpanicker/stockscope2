@@ -1,47 +1,42 @@
 [
   {
-    "name": "Kewal Kiran Clothing Ltd.",
-    "industry": "TEXTILES",
-    "symbol": "KKCL"
+    "SYMBOL": "ADFFOODS",
+    "NAME OF COMPANY": "ADF Foods Limited",
+    "SERIES": "EQ",
+    "DATE OF LISTING": "15-SEP-2010",
+    "PAID UP VALUE": "10",
+    "MARKET LOT": "1",
+    "ISIN NUMBER": "INE982B01019",
+    "FACE VALUE": "10"
   },
   {
-    "name": "3M India Ltd.",
-    "industry": "SERVICES",
-    "symbol": "3MINDIA"
+    "SYMBOL": "ADHUNIK",
+    "NAME OF COMPANY": "Adhunik Metaliks Limited",
+    "SERIES": "EQ",
+    "DATE OF LISTING": "05-APR-2006",
+    "PAID UP VALUE": "10",
+    "MARKET LOT": "1",
+    "ISIN NUMBER": "INE400H01019",
+    "FACE VALUE": "10"
   },
   {
-    "name": "Cox & Kings Ltd.",
-    "industry": "SERVICES",
-    "symbol": "COX&KINGS"
+    "SYMBOL": "ADLABS",
+    "NAME OF COMPANY": "Adlabs Entertainment Limited",
+    "SERIES": "EQ",
+    "DATE OF LISTING": "06-APR-2015",
+    "PAID UP VALUE": "10",
+    "MARKET LOT": "1",
+    "ISIN NUMBER": "INE172N01012",
+    "FACE VALUE": "10"
   },
   {
-    "name": "ABB India Ltd.",
-    "industry": "INDUSTRIAL MANUFACTURING",
-    "symbol": "ABB"
-  },
-  {
-    "name": "Bajaj Auto Ltd.",
-    "industry": "AUTOMOBILE",
-    "symbol": "BAJAJ-AUTO"
-  },
-  {
-    "name": "Castrol India Ltd.",
-    "industry": "ENERGY",
-    "symbol": "CASTROLIND"
-  },
-  {
-    "name": "Firstsource Solutions Ltd.",
-    "industry": "IT",
-    "symbol": "FSL"
-  },
-  {
-    "name": "Welspun India Ltd.",
-    "industry": "TEXTILES",
-    "symbol": "WELSPUNIND"
-  },
-  {
-    "name": "Pipavav Defence and Offshore Engineering Company Ltd.",
-    "industry": "INDUSTRIAL MANUFACTURING",
-    "symbol": "PIPAVAVDOC"
+    "SYMBOL": "ADORWELD",
+    "NAME OF COMPANY": "Ador Welding Limited",
+    "SERIES": "EQ",
+    "DATE OF LISTING": "10-MAY-1995",
+    "PAID UP VALUE": "10",
+    "MARKET LOT": "1",
+    "ISIN NUMBER": "INE045A01017",
+    "FACE VALUE": "10"
   }
 ]

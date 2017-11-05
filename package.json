@@ -7,6 +7,7 @@
     "create:logsDir":"mkdirp logs",
     "start": "npm run clean:logs && node main.js",
     "start:prod": "export NODE_ENV=production && npm start",
+    "reload":"sudo splunk stop && npm run clean:logs && sudo splunk clean eventdata && sudo splunk start && npm run start:prod",
     "help": "node talib-help.js",
     "postinstall": "npm run create:logsDir"
   },
