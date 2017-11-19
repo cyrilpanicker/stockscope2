@@ -1,3 +1,6 @@
+error=null support1_since<=5 macd>=5 adx>=20 adx<=30 | eval abs_ema200_price_ratio=abs(ema200_price_ratio) | where close>=ema3 | sort abs_ema200_price_ratio
+error=null macd>=5 adx>=20 adx<=30 | eval abs_ema200_price_ratio=abs(ema200_price_ratio) | where close>=ema3 AND abs_ema200_price_ratio<10 | sort abs_ema200_price_ratio
+---------------------
 error=null macd>=5 adx>=20 adx<=30 | eval abs_ema200_price_ratio=abs(ema200_price_ratio) | where close>=ema3 | sort abs_ema200_price_ratio
 error=null long_setup1_strength>=40 macd>=5 adx>=20 adx<=45 | where close>=ema3 | sort -adx
 ------------------------
